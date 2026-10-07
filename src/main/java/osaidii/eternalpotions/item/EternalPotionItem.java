@@ -25,18 +25,19 @@ import java.util.function.Consumer;
 public class EternalPotionItem extends Item {
 
     private static final List<Holder<MobEffect>> BIG_FOUR = List.of(
-            MobEffects.STRENGTH,
             MobEffects.SPEED,
+            MobEffects.REGENERATION,
             MobEffects.RESISTANCE,
-            MobEffects.REGENERATION
+            MobEffects.STRENGTH
     );
+
+    // Tweak these to change the feel of the randomness
+    private static final int WEIGHT_NEW = 3;      // effect you don't have yet -> level I
+    private static final int WEIGHT_UPGRADE = 1;  // level I -> level II
+    private static final int WEIGHT_MAXED = 1;    // already II -> wasted roll (set to 0 to disable)
 
     public EternalPotionItem(Properties properties) {
         super(properties);
-    }
-
-    private static boolean isKingSlotEmpty(Holder<MobEffect> effect) {
-        return false;
     }
 
     @Override
@@ -49,38 +50,56 @@ public class EternalPotionItem extends Item {
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity livingEntity) {
         if (!level.isClientSide() && livingEntity instanceof ServerPlayer serverPlayer) {
 
-            List<Holder<MobEffect>> eligible = new ArrayList<>();
+            // Build a weighted pool
+            List<Holder<MobEffect>> pool = new ArrayList<>();
 
             for (Holder<MobEffect> effect : BIG_FOUR) {
                 MobEffectInstance existing = serverPlayer.getEffect(effect);
 
+                int weight;
                 if (existing == null) {
-                    eligible.add(effect);
+                    weight = WEIGHT_NEW;
                 } else if (existing.getAmplifier() == 0) {
-                    eligible.add(effect);
-                } else if (existing.getAmplifier() == 1) {
-                    if (isKingSlotEmpty(effect)) {
-                        eligible.add(effect);
-                    }
+                    weight = WEIGHT_UPGRADE;
+                } else {
+                    weight = WEIGHT_MAXED;
+                }
+
+                for (int i = 0; i < weight; i++) {
+                    pool.add(effect);
                 }
             }
 
-            if (eligible.isEmpty()) {
+            if (pool.isEmpty()) {
                 serverPlayer.sendSystemMessage(
-                        Component.literal("No Eternal effects available to gain.")
+                        Component.literal("You already have every Eternal effect at max level.")
                                 .withStyle(ChatFormatting.RED)
                 );
                 return stack;
             }
 
-            Holder<MobEffect> chosen = eligible.get(level.getRandom().nextInt(eligible.size()));
-
+            Holder<MobEffect> chosen = pool.get(serverPlayer.getRandom().nextInt(pool.size()));
             MobEffectInstance existingChosen = serverPlayer.getEffect(chosen);
-            int newAmplifier = existingChosen == null ? 0 : existingChosen.getAmplifier() + 1;
+
+            // Rolled an effect that's already maxed -> wasted potion
+            if (existingChosen != null && existingChosen.getAmplifier() >= 1) {
+                serverPlayer.sendSystemMessage(
+                        Component.literal("The potion fizzled: ")
+                                .append(Component.translatable(chosen.value().getDescriptionId()))
+                                .append(Component.literal(" is already maxed."))
+                                .withStyle(ChatFormatting.GRAY)
+                );
+                if (!serverPlayer.hasInfiniteMaterials()) {
+                    stack.shrink(1);
+                }
+                return stack;
+            }
+
+            int newAmplifier = existingChosen == null ? 0 : 1;
 
             serverPlayer.addEffect(new MobEffectInstance(chosen, MobEffectInstance.INFINITE_DURATION, newAmplifier));
 
-            String levelText = newAmplifier == 0 ? "I" : (newAmplifier == 1 ? "II" : "III");
+            String levelText = newAmplifier == 0 ? "I" : "II";
 
             serverPlayer.sendSystemMessage(
                     Component.literal("You got: ")

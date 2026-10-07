@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "OHO",
+    "EKS",
+    "OTO"
+  ],
+  "key": {
+    "O": "minecraft:ominous_trial_key",
+    "H": "minecraft:heart_of_the_sea",
+    "E": "minecraft:ender_eye",
+    "K": "minecraft:echo_shard",
+    "S": "minecraft:totem_of_undying",
+    "T": "minecraft:enchanted_golden_apple"
+  },
+  "result": {
+    "id": "eternal-potions:eternal_shard",
+    "count": 1
+  }
+}

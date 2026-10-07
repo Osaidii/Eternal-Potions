@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:brewing",
+  "input": {
+    "item": "minecraft:potion",
+    "potion_contents": {
+      "potion": "minecraft:water"
+    }
+  },
+  "reagent": {
+    "item": "eternal-potions:eternal_shard"
+  },
+  "output": {
+    "id": "eternal-potions:eternal_potion",
+    "count": 1
+  }
+}

@@ -3,6 +3,7 @@ package osaidii.eternalpotions.item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -17,6 +18,8 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
+import osaidii.eternalpotions.EternalPotions;
+import osaidii.eternalpotions.EternalState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +34,16 @@ public class EternalPotionItem extends Item {
             MobEffects.STRENGTH
     );
 
-    // Tweak these to change the feel of the randomness
-    private static final int WEIGHT_NEW = 3;      // effect you don't have yet -> level I
-    private static final int WEIGHT_UPGRADE = 1;  // level I -> level II
-    private static final int WEIGHT_MAXED = 1;    // already II -> wasted roll (set to 0 to disable)
-
     public EternalPotionItem(Properties properties) {
         super(properties);
+    }
+
+    private static String getEffectDisplayName(Holder<MobEffect> effect) {
+        if (effect == MobEffects.SPEED) return "Speed";
+        if (effect == MobEffects.REGENERATION) return "Regeneration";
+        if (effect == MobEffects.RESISTANCE) return "Resistance";
+        if (effect == MobEffects.STRENGTH) return "Strength";
+        return "Unknown";
     }
 
     @Override
@@ -50,60 +56,60 @@ public class EternalPotionItem extends Item {
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity livingEntity) {
         if (!level.isClientSide() && livingEntity instanceof ServerPlayer serverPlayer) {
 
-            // Build a weighted pool
-            List<Holder<MobEffect>> pool = new ArrayList<>();
+            ServerLevel serverLevel = (ServerLevel) serverPlayer.level();
+            EternalState state = EternalPotions.getState(serverLevel.getServer());
+
+            List<Holder<MobEffect>> eligible = new ArrayList<>();
 
             for (Holder<MobEffect> effect : BIG_FOUR) {
                 MobEffectInstance existing = serverPlayer.getEffect(effect);
+                String effectId = effect.value().getDescriptionId();
 
-                int weight;
                 if (existing == null) {
-                    weight = WEIGHT_NEW;
+                    eligible.add(effect);
                 } else if (existing.getAmplifier() == 0) {
-                    weight = WEIGHT_UPGRADE;
-                } else {
-                    weight = WEIGHT_MAXED;
-                }
-
-                for (int i = 0; i < weight; i++) {
-                    pool.add(effect);
+                    eligible.add(effect);
+                } else if (existing.getAmplifier() == 1) {
+                    if (state.isSlotEmpty(effectId)) {
+                        eligible.add(effect);
+                    }
                 }
             }
 
-            if (pool.isEmpty()) {
+            if (eligible.isEmpty()) {
                 serverPlayer.sendSystemMessage(
-                        Component.literal("You already have every Eternal effect at max level.")
+                        Component.literal("You already have every Eternal effect.")
                                 .withStyle(ChatFormatting.RED)
                 );
                 return stack;
             }
 
-            Holder<MobEffect> chosen = pool.get(serverPlayer.getRandom().nextInt(pool.size()));
+            Holder<MobEffect> chosen = eligible.get(level.getRandom().nextInt(eligible.size()));
+
             MobEffectInstance existingChosen = serverPlayer.getEffect(chosen);
-
-            // Rolled an effect that's already maxed -> wasted potion
-            if (existingChosen != null && existingChosen.getAmplifier() >= 1) {
-                serverPlayer.sendSystemMessage(
-                        Component.literal("The potion fizzled: ")
-                                .append(Component.translatable(chosen.value().getDescriptionId()))
-                                .append(Component.literal(" is already maxed."))
-                                .withStyle(ChatFormatting.GRAY)
-                );
-                if (!serverPlayer.hasInfiniteMaterials()) {
-                    stack.shrink(1);
-                }
-                return stack;
-            }
-
-            int newAmplifier = existingChosen == null ? 0 : 1;
+            int newAmplifier = existingChosen == null ? 0 : existingChosen.getAmplifier() + 1;
 
             serverPlayer.addEffect(new MobEffectInstance(chosen, MobEffectInstance.INFINITE_DURATION, newAmplifier));
 
-            String levelText = newAmplifier == 0 ? "I" : "II";
+            String levelText = newAmplifier == 0 ? "I" : (newAmplifier == 1 ? "II" : "III");
+            String prettyName = getEffectDisplayName(chosen);
+
+            if (newAmplifier == 2) {
+                String effectId = chosen.value().getDescriptionId();
+                state.crownKing(effectId, serverPlayer.getUUID(), serverPlayer.getName().getString());
+
+                serverLevel.getServer().getPlayerList().broadcastSystemMessage(
+                        Component.literal("")
+                                .append(serverPlayer.getName())
+                                .append(Component.literal(" has been crowned the King of " + prettyName + "!"))
+                                .withStyle(ChatFormatting.GOLD),
+                        false
+                );
+            }
 
             serverPlayer.sendSystemMessage(
                     Component.literal("You got: ")
-                            .append(Component.translatable(chosen.value().getDescriptionId()))
+                            .append(Component.literal(prettyName))
                             .append(Component.literal(" " + levelText))
                             .withStyle(ChatFormatting.GOLD)
             );

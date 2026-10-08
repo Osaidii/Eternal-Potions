@@ -1,33 +1,23 @@
 {
 	"schemaVersion": 1,
 	"id": "eternal-potions",
-	"version": "${version}",
-	"name": "eternal-potions",
-	"description": "This is an example description! Tell everyone what your mod is about!",
-	"authors": [
-		"Me!"
-	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
-	"license": "CC0-1.0",
+	"version": "1.0.0",
+	"name": "Eternal Potions",
+	"description": "Eternal potions with Kings and effects.",
+	"authors": ["osaidii"],
+	"license": "CC0",
 	"icon": "assets/eternal-potions/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
-			"osaidii.eternalpotions.EternalPotions"
-		],
+		"main": ["osaidii.eternalpotions.EternalPotions"],
 		"client": [
-			"osaidii.eternalpotions.client.EternalPotionsClient"
+			"osaidii.eternalpotions.client.EternalPotionsClient",
+			"osaidii.eternalpotions.client.EternalPotionTooltip"
 		]
 	},
 	"mixins": [
 		"eternal-potions.mixins.json",
-		{
-			"config": "eternal-potions.client.mixins.json",
-			"environment": "client"
-		}
+		"eternal-potions.client.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.19.5",

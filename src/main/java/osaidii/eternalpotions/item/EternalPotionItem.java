@@ -105,6 +105,9 @@ public class EternalPotionItem extends Item {
                                 .withStyle(ChatFormatting.GOLD),
                         false
                 );
+
+                // Fire the all-four-thrones check.
+                EternalPotions.checkThrones(serverLevel.getServer(), state);
             }
 
             serverPlayer.sendSystemMessage(

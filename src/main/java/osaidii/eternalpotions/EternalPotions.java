@@ -5,8 +5,11 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.Holder;
@@ -18,18 +21,24 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.BrewingStandBlock;
+import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import osaidii.eternalpotions.item.ModItems;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class EternalPotions implements ModInitializer {
@@ -44,6 +53,12 @@ public class EternalPotions implements ModInitializer {
 			MobEffects.RESISTANCE,
 			MobEffects.STRENGTH
 	);
+
+	/** UUID -> description IDs of thrones that were held at moment of death. */
+	private static final Map<UUID, List<String>> PENDING_KING_RESPAWN = new HashMap<>();
+
+	/** Guards the "all four thrones claimed" broadcast so it only fires once per fill. */
+	private static boolean allThronesAnnounced = false;
 
 	@Override
 	public void onInitialize() {
@@ -61,6 +76,7 @@ public class EternalPotions implements ModInitializer {
 			output.accept(ModItems.ETERNAL_POTION);
 		});
 
+		// -------- Death handling (also stashes pending respawn thrones) --------
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
 			if (!(entity instanceof ServerPlayer player)) return;
 
@@ -82,11 +98,17 @@ public class EternalPotions implements ModInitializer {
 
 				if (kingUuid != null && kingUuid.equals(player.getUUID())) {
 					state.removeKing(effectId);
+
+					// Remember this throne so we can restore it at Level II on respawn.
+					PENDING_KING_RESPAWN
+							.computeIfAbsent(player.getUUID(), k -> new ArrayList<>())
+							.add(effectId);
+
 					server.getPlayerList().broadcastSystemMessage(
 							Component.literal("The King of " + getEffectDisplayName(effect) + " (")
 									.append(player.getName())
 									.append(Component.literal(") has fallen. The throne is empty."))
-									.withStyle(net.minecraft.ChatFormatting.RED),
+									.withStyle(ChatFormatting.RED),
 							false
 					);
 				}
@@ -109,11 +131,28 @@ public class EternalPotions implements ModInitializer {
 			}
 		});
 
+		// -------- King death -> respawn at Level II --------
+		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+			List<String> effectIds = PENDING_KING_RESPAWN.remove(oldPlayer.getUUID());
+			if (effectIds == null || effectIds.isEmpty()) return;
+
+			for (String effectId : effectIds) {
+				Holder<MobEffect> effect = effectFromId(effectId);
+				if (effect == null) continue;
+				newPlayer.addEffect(new MobEffectInstance(effect, MobEffectInstance.INFINITE_DURATION, 1));
+				newPlayer.sendSystemMessage(Component.literal(
+								"Your royal blood endures — you keep " +
+										getEffectDisplayName(effect) + " II.")
+						.withStyle(ChatFormatting.GOLD));
+			}
+		});
+
+		// -------- Tick: crown aura + ghost king cleanup --------
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			int tickCounter = server.getTickCount();
+			EternalState state = getState(server);
 
 			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-				EternalState state = getState(server);
 				UUID playerId = player.getUUID();
 
 				boolean isKing = false;
@@ -141,6 +180,29 @@ public class EternalPotions implements ModInitializer {
 					);
 				}
 			}
+
+			// -------- Ghost king cleanup --------
+			if (tickCounter % 20 == 0) {
+				cleanupGhostKings(server, state);
+			}
+		});
+
+		PlayerBlockBreakEvents.BEFORE.register((level, player, pos, state, blockEntity) -> {
+			if (!(state.getBlock() instanceof BrewingStandBlock)) return true;
+
+			if (blockEntity instanceof BrewingStandBlockEntity stand) {
+				ItemStack reagent = stand.getItem(3);
+				if (reagent.is(ModItems.ETERNAL_SHARD)) {
+					boolean hasPotion = !stand.getItem(0).isEmpty()
+							|| !stand.getItem(1).isEmpty()
+							|| !stand.getItem(2).isEmpty();
+					if (hasPotion) {
+						return false;
+					}
+				}
+			}
+
+			return true;
 		});
 
 		registerCommands();
@@ -148,10 +210,93 @@ public class EternalPotions implements ModInitializer {
 		LOGGER.info("Eternal Potions loaded");
 	}
 
+	// ---------------------------------------------------------------
+	//  Ghost king cleanup
+	// ---------------------------------------------------------------
+	private static void cleanupGhostKings(MinecraftServer server, EternalState state) {
+		for (Holder<MobEffect> effect : BIG_FOUR) {
+			String effectId = effect.value().getDescriptionId();
+			UUID kingUuid = state.getKing(effectId);
+			if (kingUuid == null) continue;
+
+			ServerPlayer king = server.getPlayerList().getPlayer(kingUuid);
+			if (king == null) continue; // offline — leave the throne intact
+
+			MobEffectInstance inst = king.getEffect(effect);
+			if (inst == null || inst.getAmplifier() < 2) {
+				state.removeKing(effectId);
+				server.getPlayerList().broadcastSystemMessage(
+						Component.literal("The throne of " + getEffectDisplayName(effect) +
+										" sits empty once more.")
+								.withStyle(ChatFormatting.GRAY),
+						false
+				);
+			}
+		}
+	}
+
+	// ---------------------------------------------------------------
+	//  All-four-thrones broadcast
+	// ---------------------------------------------------------------
+	public static void checkThrones(MinecraftServer server, EternalState state) {
+		boolean allFilled = true;
+		for (Holder<MobEffect> effect : BIG_FOUR) {
+			if (state.isSlotEmpty(effect.value().getDescriptionId())) {
+				allFilled = false;
+				break;
+			}
+		}
+
+		if (!allFilled) {
+			allThronesAnnounced = false;
+			return;
+		}
+		if (allThronesAnnounced) return;
+		allThronesAnnounced = true;
+
+		UUID soleHolder = null;
+		boolean oneHolder = true;
+		for (Holder<MobEffect> effect : BIG_FOUR) {
+			UUID u = state.getKing(effect.value().getDescriptionId());
+			if (soleHolder == null) soleHolder = u;
+			else if (!soleHolder.equals(u)) { oneHolder = false; break; }
+		}
+
+		if (oneHolder && soleHolder != null) {
+			String name = state.getKingName(BIG_FOUR.get(0).value().getDescriptionId());
+			if (name == null) name = "A player";
+			server.getPlayerList().broadcastSystemMessage(
+					Component.literal(name + " has claimed ALL FOUR THRONES. The Eternal belongs to them.")
+							.withStyle(ChatFormatting.GOLD),
+					false
+			);
+		} else {
+			server.getPlayerList().broadcastSystemMessage(
+					Component.literal("All four thrones have been claimed.").withStyle(ChatFormatting.GOLD),
+					false
+			);
+		}
+	}
+
+	// ---------------------------------------------------------------
+	//  Command permission gate
+	// ---------------------------------------------------------------
+	/**
+	 * Console / RCON always passes. Players must be opped on the server.
+	 * Uses NameAndId because PlayerList.isOp stopped accepting GameProfile in 26.3.
+	 */
+	private static boolean hasPermission(net.minecraft.commands.CommandSourceStack source) {
+		ServerPlayer player = source.getPlayer();
+		if (player == null) return true;
+		NameAndId id = new NameAndId(player.getUUID(), player.getName().getString());
+		return source.getServer().getPlayerList().isOp(id);
+	}
+
 	private void registerCommands() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(
 					Commands.literal("eternal")
+							.requires(EternalPotions::hasPermission)
 							.then(Commands.literal("give")
 									.then(Commands.argument("player", EntityArgument.player())
 											.then(Commands.argument("effect", StringArgumentType.word())
@@ -186,7 +331,7 @@ public class EternalPotions implements ModInitializer {
 																				target.getName().getString() + " stays at II."));
 																target.sendSystemMessage(Component.literal(
 																		"You cannot reach " + getEffectDisplayName(effect) +
-																				" III — someone else is King.").withStyle(net.minecraft.ChatFormatting.RED));
+																				" III — someone else is King.").withStyle(ChatFormatting.RED));
 																return 0;
 															}
 
@@ -196,21 +341,22 @@ public class EternalPotions implements ModInitializer {
 																	Component.literal("")
 																			.append(target.getName())
 																			.append(Component.literal(" has been crowned the King of " + getEffectDisplayName(effect) + "!"))
-																			.withStyle(net.minecraft.ChatFormatting.GOLD),
+																			.withStyle(ChatFormatting.GOLD),
 																	false
 															);
 															target.sendSystemMessage(Component.literal(
-																	"You are now King of " + getEffectDisplayName(effect) + "!").withStyle(net.minecraft.ChatFormatting.GOLD));
+																	"You are now King of " + getEffectDisplayName(effect) + "!").withStyle(ChatFormatting.GOLD));
 															ctx.getSource().sendSuccess(() -> Component.literal(
 																	"Crowned " + target.getName().getString() +
 																			" as King of " + getEffectDisplayName(effect)), true);
+															checkThrones(server, state);
 															return 1;
 														}
 
 														target.addEffect(new MobEffectInstance(effect, MobEffectInstance.INFINITE_DURATION, nextAmplifier));
 														String level = nextAmplifier == 0 ? "I" : "II";
 														target.sendSystemMessage(Component.literal(
-																"You were given " + getEffectDisplayName(effect) + " " + level).withStyle(net.minecraft.ChatFormatting.GOLD));
+																"You were given " + getEffectDisplayName(effect) + " " + level).withStyle(ChatFormatting.GOLD));
 														ctx.getSource().sendSuccess(() -> Component.literal(
 																"Gave " + getEffectDisplayName(effect) + " " + level +
 																		" to " + target.getName().getString()), true);
@@ -263,17 +409,17 @@ public class EternalPotions implements ModInitializer {
 																	Component.literal("The King of " + getEffectDisplayName(effect) + " (")
 																			.append(target.getName())
 																			.append(Component.literal(") has fallen. The throne is empty."))
-																			.withStyle(net.minecraft.ChatFormatting.RED),
+																			.withStyle(ChatFormatting.RED),
 																	false
 															);
 															target.sendSystemMessage(Component.literal(
 																	"You have been dethroned from " + getEffectDisplayName(effect) +
-																			" and dropped to Level II.").withStyle(net.minecraft.ChatFormatting.RED));
+																			" and dropped to Level II.").withStyle(ChatFormatting.RED));
 														} else {
 															target.removeEffect(effect);
 															target.sendSystemMessage(Component.literal(
 																			"Your " + getEffectDisplayName(effect) + " was removed.")
-																	.withStyle(net.minecraft.ChatFormatting.RED));
+																	.withStyle(ChatFormatting.RED));
 														}
 
 														ctx.getSource().sendSuccess(() -> Component.literal(
@@ -311,9 +457,10 @@ public class EternalPotions implements ModInitializer {
 																		Component.literal("")
 																				.append(target.getName())
 																				.append(Component.literal(" has been crowned the King of " + getEffectDisplayName(effect) + "!"))
-																				.withStyle(net.minecraft.ChatFormatting.GOLD),
+																				.withStyle(ChatFormatting.GOLD),
 																		false
 																);
+																checkThrones(server, state);
 																return 1;
 															})
 													)
@@ -348,7 +495,7 @@ public class EternalPotions implements ModInitializer {
 															king.addEffect(new MobEffectInstance(effect, MobEffectInstance.INFINITE_DURATION, 1));
 															king.sendSystemMessage(Component.literal(
 																	"You have been dethroned from " + getEffectDisplayName(effect) +
-																			" and dropped to Level II.").withStyle(net.minecraft.ChatFormatting.RED));
+																			" and dropped to Level II.").withStyle(ChatFormatting.RED));
 														}
 														state.removeKing(effect.value().getDescriptionId());
 														ctx.getSource().sendSuccess(() -> Component.literal(
@@ -380,6 +527,9 @@ public class EternalPotions implements ModInitializer {
 		});
 	}
 
+	// ---------------------------------------------------------------
+	//  Helpers
+	// ---------------------------------------------------------------
 	private static Holder<MobEffect> parseEffect(String name) {
 		return switch (name.toLowerCase()) {
 			case "speed" -> MobEffects.SPEED;
@@ -390,7 +540,15 @@ public class EternalPotions implements ModInitializer {
 		};
 	}
 
-	private static String getEffectDisplayName(Holder<MobEffect> effect) {
+	/** Reverse lookup from a description ID back to a Holder. */
+	public static Holder<MobEffect> effectFromId(String effectId) {
+		for (Holder<MobEffect> effect : BIG_FOUR) {
+			if (effect.value().getDescriptionId().equals(effectId)) return effect;
+		}
+		return null;
+	}
+
+	public static String getEffectDisplayName(Holder<MobEffect> effect) {
 		if (effect == MobEffects.SPEED) return "Speed";
 		if (effect == MobEffects.REGENERATION) return "Regeneration";
 		if (effect == MobEffects.RESISTANCE) return "Resistance";

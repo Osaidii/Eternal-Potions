@@ -22,6 +22,7 @@
   "eternal-potions.king.all_four_multi": "四座王座已被全部占领。",
 
   "eternal-potions.command.unknown_effect": "未知效果：%s",
+  "eternal-potions.command.already_king": "%s已经是%s之王",
   "eternal-potions.command.king_slot_taken": "%s之王位置已被占据。%s停留在II。",
   "eternal-potions.command.cannot_reach_iii": "你无法达到%s III——其他人已是王。",
   "eternal-potions.command.crowned": "已将%s加冕为%s之王",

@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraft.world.waypoints.Waypoint;
+import net.minecraft.world.waypoints.WaypointStyleAssets;
 import net.minecraft.world.waypoints.WaypointTransmitter;
 import osaidii.eternalpotions.item.ModItems;
 
@@ -32,13 +33,22 @@ public class BrewWaypointTransmitter implements WaypointTransmitter {
         return pos;
     }
 
-    /** True only while the stand still contains an Eternal Shard in slot 3. */
+    /**
+     * True only while an Eternal brew is actually in progress:
+     * a shard in the reagent slot AND brewTime > 0.
+     */
     @Override
     public boolean isTransmittingWaypoint() {
         if (!level.isLoaded(pos)) return false;
         if (!(level.getBlockEntity(pos) instanceof BrewingStandBlockEntity stand)) return false;
+
         ItemStack reagent = stand.getItem(3);
-        return !reagent.isEmpty() && reagent.is(ModItems.ETERNAL_SHARD);
+        if (reagent.isEmpty() || !reagent.is(ModItems.ETERNAL_SHARD)) return false;
+
+        if (stand instanceof BrewingStandAccess access) {
+            return access.eternalPotions$getBrewTime() > 0;
+        }
+        return false;
     }
 
     @Override
@@ -57,17 +67,14 @@ public class BrewWaypointTransmitter implements WaypointTransmitter {
 
             @Override
             public void connect() {
-                // no-op
             }
 
             @Override
             public void disconnect() {
-                // no-op
             }
 
             @Override
             public void update() {
-                // no-op
             }
 
             @Override
@@ -79,7 +86,9 @@ public class BrewWaypointTransmitter implements WaypointTransmitter {
 
     @Override
     public Waypoint.Icon waypointIcon() {
-        return new Waypoint.Icon();
+        Waypoint.Icon icon = new Waypoint.Icon();
+        icon.style = WaypointStyleAssets.DEFAULT;
+        return icon;
     }
 
     @Override

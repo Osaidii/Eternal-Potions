@@ -16,8 +16,7 @@
 		]
 	},
 	"mixins": [
-		"eternal-potions.mixins.json",
-		"eternal-potions.client.mixins.json"
+		"eternal-potions.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.19.5",

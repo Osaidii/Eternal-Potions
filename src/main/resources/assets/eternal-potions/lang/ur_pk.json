@@ -22,6 +22,7 @@
   "eternal-potions.king.all_four_multi": "چاروں تختوں پر قبضہ ہو چکا ہے۔",
 
   "eternal-potions.command.unknown_effect": "نامعلوم اثر: %s",
+  "eternal-potions.command.already_king": "%s پہلے ہی %s کا بادشاہ ہے",
   "eternal-potions.command.king_slot_taken": "%s بادشاہ کی جگہ پر قبضہ ہے۔ %s II پر رہے گا۔",
   "eternal-potions.command.cannot_reach_iii": "آپ %s III تک نہیں پہنچ سکتے — کوئی اور بادشاہ ہے۔",
   "eternal-potions.command.crowned": "%s کو %s کا بادشاہ بنایا گیا",

@@ -5,10 +5,11 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -29,6 +30,7 @@ import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.BrewingStandBlock;
@@ -38,11 +40,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import osaidii.eternalpotions.effect.EternalEffects;
 import osaidii.eternalpotions.item.ModItems;
+import osaidii.eternalpotions.network.EternalNetworking;
+import osaidii.eternalpotions.network.KingsDataPayload;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class EternalPotions implements ModInitializer {
@@ -50,6 +52,8 @@ public class EternalPotions implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static final SimpleParticleType CROWN_PARTICLE = FabricParticleTypes.simple();
+	public static final SimpleParticleType ETERNAL_LEVEL1_PARTICLE = FabricParticleTypes.simple();
+	public static final SimpleParticleType ETERNAL_LEVEL2_PARTICLE = FabricParticleTypes.simple();
 
 	private static final List<Holder<MobEffect>> BIG_FOUR = List.of(
 			EternalEffects.ETERNAL_SPEED,
@@ -58,7 +62,6 @@ public class EternalPotions implements ModInitializer {
 			EternalEffects.ETERNAL_STRENGTH
 	);
 
-	private static final Map<UUID, List<String>> PENDING_KING_RESPAWN = new HashMap<>();
 	private static boolean allThronesAnnounced = false;
 
 	public static MobEffectInstance eternalInstance(Holder<MobEffect> effect, int amplifier) {
@@ -72,7 +75,6 @@ public class EternalPotions implements ModInitializer {
 		);
 	}
 
-	/** Translatable display name for an Eternal effect. */
 	public static Component effectName(Holder<MobEffect> effect) {
 		return Component.translatable(effect.value().getDescriptionId());
 	}
@@ -81,10 +83,17 @@ public class EternalPotions implements ModInitializer {
 	public void onInitialize() {
 		EternalEffects.initialize();
 		ModItems.initialize();
+		EternalNetworking.register();
 
 		Registry.register(BuiltInRegistries.PARTICLE_TYPE,
 				Identifier.fromNamespaceAndPath(MOD_ID, "crown_particle"),
 				CROWN_PARTICLE);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+				Identifier.fromNamespaceAndPath(MOD_ID, "eternal_level1_particle"),
+				ETERNAL_LEVEL1_PARTICLE);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+				Identifier.fromNamespaceAndPath(MOD_ID, "eternal_level2_particle"),
+				ETERNAL_LEVEL2_PARTICLE);
 
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.INGREDIENTS).register(output -> {
 			output.accept(ModItems.ETERNAL_SHARD);
@@ -95,6 +104,22 @@ public class EternalPotions implements ModInitializer {
 		});
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> BrewWaypoints.clear(server));
+
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			ServerPlayer player = handler.getPlayer();
+			EternalState state = getState(server);
+			String currentName = player.getName().getString();
+
+			for (Holder<MobEffect> effect : BIG_FOUR) {
+				String effectId = effect.value().getDescriptionId();
+				UUID kingUuid = state.getKing(effectId);
+				if (kingUuid != null && kingUuid.equals(player.getUUID())) {
+					state.updateKingName(effectId, currentName);
+				}
+			}
+
+			broadcastKings(server);
+		});
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
 			if (!(entity instanceof ServerPlayer player)) return;
@@ -117,10 +142,6 @@ public class EternalPotions implements ModInitializer {
 
 				if (kingUuid != null && kingUuid.equals(player.getUUID())) {
 					state.removeKing(effectId);
-
-					PENDING_KING_RESPAWN
-							.computeIfAbsent(player.getUUID(), k -> new ArrayList<>())
-							.add(effectId);
 
 					server.getPlayerList().broadcastSystemMessage(
 							Component.translatable("eternal-potions.king.fallen",
@@ -147,58 +168,42 @@ public class EternalPotions implements ModInitializer {
 				);
 				level.addFreshEntity(drop);
 			}
-		});
 
-		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-			List<String> effectIds = PENDING_KING_RESPAWN.remove(oldPlayer.getUUID());
-			if (effectIds == null || effectIds.isEmpty()) return;
-
-			for (String effectId : effectIds) {
-				Holder<MobEffect> effect = effectFromId(effectId);
-				if (effect == null) continue;
-				newPlayer.addEffect(eternalInstance(effect, 1));
-				newPlayer.sendSystemMessage(Component.translatable(
-								"eternal-potions.king.respawn_keep", effectName(effect))
-						.withStyle(ChatFormatting.GOLD));
-			}
+			checkThrones(server, state);
+			broadcastKings(server);
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			int tickCounter = server.getTickCount();
 			EternalState state = getState(server);
 
-			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-				UUID playerId = player.getUUID();
-
-				boolean isKing = false;
-				for (Holder<MobEffect> effect : BIG_FOUR) {
-					UUID kingUuid = state.getKing(effect.value().getDescriptionId());
-					if (kingUuid != null && kingUuid.equals(playerId)) {
-						isKing = true;
-						break;
+			if (tickCounter % 20 == 0) {
+				for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+					SimpleParticleType particle = selectParticle(player, state);
+					if (particle != null) {
+						ServerLevel level = (ServerLevel) player.level();
+						level.sendParticles(
+								particle,
+								player.getX(),
+								player.getY() + 1.9,
+								player.getZ(),
+								1,
+								0.25,
+								0.05,
+								0.25,
+								0.0
+						);
 					}
 				}
 
-				ServerLevel level = (ServerLevel) player.level();
-
-				if (isKing && tickCounter % 20 == 0) {
-					level.sendParticles(
-							CROWN_PARTICLE,
-							player.getX(),
-							player.getY() + 1.9,
-							player.getZ(),
-							1,
-							0.25,
-							0.05,
-							0.25,
-							0.0
-					);
+				boolean removed = cleanupGhostKings(server, state);
+				if (removed) {
+					checkThrones(server, state);
+					broadcastKings(server);
 				}
-			}
-
-			if (tickCounter % 20 == 0) {
-				cleanupGhostKings(server, state);
 				BrewWaypoints.tick(server);
+
+				broadcastKings(server);
 			}
 		});
 
@@ -225,7 +230,73 @@ public class EternalPotions implements ModInitializer {
 		LOGGER.info("Eternal Potions loaded");
 	}
 
-	private static void cleanupGhostKings(MinecraftServer server, EternalState state) {
+	public static void broadcastKings(MinecraftServer server) {
+		EternalState state = getState(server);
+		List<KingsDataPayload.KingEntry> entries = new ArrayList<>(4);
+
+		for (Holder<MobEffect> effect : BIG_FOUR) {
+			String effectId = effect.value().getDescriptionId();
+			String name = state.getKingName(effectId);
+			entries.add(new KingsDataPayload.KingEntry(effectId, name == null ? "" : name));
+		}
+
+		KingsDataPayload payload = new KingsDataPayload(entries);
+		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			ServerPlayNetworking.send(player, payload);
+		}
+	}
+
+	private static void closeMenusViewing(MinecraftServer server, BlockPos pos) {
+		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			AbstractContainerMenu menu = player.containerMenu;
+			if (menu == null) continue;
+
+			boolean viewing = false;
+			for (var slot : menu.slots) {
+				if (slot.container instanceof BrewingStandBlockEntity stand) {
+					if (stand.getBlockPos().equals(pos)) {
+						viewing = true;
+						break;
+					}
+				}
+			}
+
+			if (viewing) {
+				player.closeContainer();
+			}
+		}
+	}
+
+	private static SimpleParticleType selectParticle(ServerPlayer player, EternalState state) {
+		UUID playerId = player.getUUID();
+		boolean isKing = false;
+		boolean hasLevel2 = false;
+		boolean hasLevel1 = false;
+
+		for (Holder<MobEffect> effect : BIG_FOUR) {
+			UUID kingUuid = state.getKing(effect.value().getDescriptionId());
+			if (kingUuid != null && kingUuid.equals(playerId)) {
+				isKing = true;
+			}
+
+			MobEffectInstance inst = player.getEffect(effect);
+			if (inst != null) {
+				if (inst.getAmplifier() >= 1) {
+					hasLevel2 = true;
+				} else if (inst.getAmplifier() == 0) {
+					hasLevel1 = true;
+				}
+			}
+		}
+
+		if (isKing) return CROWN_PARTICLE;
+		if (hasLevel2) return ETERNAL_LEVEL2_PARTICLE;
+		if (hasLevel1) return ETERNAL_LEVEL1_PARTICLE;
+		return null;
+	}
+
+	private static boolean cleanupGhostKings(MinecraftServer server, EternalState state) {
+		boolean any = false;
 		for (Holder<MobEffect> effect : BIG_FOUR) {
 			String effectId = effect.value().getDescriptionId();
 			UUID kingUuid = state.getKing(effectId);
@@ -242,8 +313,10 @@ public class EternalPotions implements ModInitializer {
 								.withStyle(ChatFormatting.GRAY),
 						false
 				);
+				any = true;
 			}
 		}
+		return any;
 	}
 
 	public static void checkThrones(MinecraftServer server, EternalState state) {
@@ -326,6 +399,7 @@ public class EternalPotions implements ModInitializer {
 													return 0;
 												}
 
+												closeMenusViewing(level.getServer(), pos);
 												BrewWaypoints.stopBrew(level, pos);
 												level.destroyBlock(pos, true);
 
@@ -372,6 +446,14 @@ public class EternalPotions implements ModInitializer {
 
 														if (nextAmplifier >= 2) {
 															String effectId = effect.value().getDescriptionId();
+
+															UUID currentKing = state.getKing(effectId);
+															if (currentKing != null && currentKing.equals(target.getUUID())) {
+																ctx.getSource().sendFailure(Component.translatable(
+																		"eternal-potions.command.already_king", effectName(effect)));
+																return 0;
+															}
+
 															if (!state.isSlotEmpty(effectId)) {
 																ctx.getSource().sendFailure(Component.translatable(
 																		"eternal-potions.command.king_slot_taken",
@@ -399,6 +481,7 @@ public class EternalPotions implements ModInitializer {
 																	"eternal-potions.command.crowned",
 																	target.getName(), effectName(effect)), true);
 															checkThrones(server, state);
+															broadcastKings(server);
 															return 1;
 														}
 
@@ -479,6 +562,8 @@ public class EternalPotions implements ModInitializer {
 														ctx.getSource().sendSuccess(() -> Component.translatable(
 																"eternal-potions.command.removed",
 																effectName(effect), target.getName()), true);
+														checkThrones(server, state);
+														broadcastKings(server);
 														return 1;
 													})
 											)
@@ -506,8 +591,22 @@ public class EternalPotions implements ModInitializer {
 																}
 																MinecraftServer server = ctx.getSource().getServer();
 																EternalState state = getState(server);
-																state.crownKing(effect.value().getDescriptionId(),
-																		target.getUUID(), target.getName().getString());
+																String effectId = effect.value().getDescriptionId();
+
+																UUID existingKing = state.getKing(effectId);
+																if (existingKing != null && !existingKing.equals(target.getUUID())) {
+																	ServerPlayer oldKing = server.getPlayerList().getPlayer(existingKing);
+																	if (oldKing != null) {
+																		oldKing.removeEffect(effect);
+																		oldKing.addEffect(eternalInstance(effect, 1));
+																		oldKing.sendSystemMessage(Component.translatable(
+																						"eternal-potions.command.dethroned_self",
+																						effectName(effect))
+																				.withStyle(ChatFormatting.RED));
+																	}
+																}
+
+																state.crownKing(effectId, target.getUUID(), target.getName().getString());
 																target.addEffect(eternalInstance(effect, 2));
 																server.getPlayerList().broadcastSystemMessage(
 																		Component.translatable("eternal-potions.king.crowned",
@@ -516,6 +615,7 @@ public class EternalPotions implements ModInitializer {
 																		false
 																);
 																checkThrones(server, state);
+																broadcastKings(server);
 																return 1;
 															})
 													)
@@ -558,6 +658,8 @@ public class EternalPotions implements ModInitializer {
 														state.removeKing(effect.value().getDescriptionId());
 														ctx.getSource().sendSuccess(() -> Component.translatable(
 																"eternal-potions.command.dethroned", effectName(effect)), true);
+														checkThrones(server, state);
+														broadcastKings(server);
 														return 1;
 													})
 											)

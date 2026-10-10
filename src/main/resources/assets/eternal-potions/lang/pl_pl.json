@@ -22,6 +22,7 @@
   "eternal-potions.king.all_four_multi": "Wszystkie cztery trony zostały przejęte.",
 
   "eternal-potions.command.unknown_effect": "Nieznany efekt: %s",
+  "eternal-potions.command.already_king": "%s jest już Królem %s",
   "eternal-potions.command.king_slot_taken": "Miejsce Króla %s jest zajęte. %s pozostaje na II.",
   "eternal-potions.command.cannot_reach_iii": "Nie możesz osiągnąć %s III — ktoś inny jest Królem.",
   "eternal-potions.command.crowned": "%s koronowany na Króla %s",

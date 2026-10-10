@@ -5,7 +5,10 @@
 	"mixins": [
 		"BrewingStandMixin",
 		"BrewingStandMenuMixin",
-		"EternalResistanceMixin"
+		"EternalResistanceMixin",
+		"MilkPreserveMixin",
+		"TotemSaveMixin",
+		"VanillaEffectBlockMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

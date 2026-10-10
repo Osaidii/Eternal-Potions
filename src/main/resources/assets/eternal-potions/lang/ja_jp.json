@@ -22,6 +22,7 @@
   "eternal-potions.king.all_four_multi": "四つの玉座が全て占められました。",
 
   "eternal-potions.command.unknown_effect": "不明な効果: %s",
+  "eternal-potions.command.already_king": "%sは既に%sの王です",
   "eternal-potions.command.king_slot_taken": "%sの王の座は埋まっています。%sはIIのままです。",
   "eternal-potions.command.cannot_reach_iii": "%s IIIには到達できません — 他の誰かが王です。",
   "eternal-potions.command.crowned": "%sを%sの王として戴冠",

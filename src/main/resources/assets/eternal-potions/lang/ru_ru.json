@@ -22,6 +22,7 @@
   "eternal-potions.king.all_four_multi": "Все четыре трона захвачены.",
 
   "eternal-potions.command.unknown_effect": "Неизвестный эффект: %s",
+  "eternal-potions.command.already_king": "%s уже Король %s",
   "eternal-potions.command.king_slot_taken": "Место Короля %s занято. %s остаётся на II.",
   "eternal-potions.command.cannot_reach_iii": "Вы не можете достичь %s III — кто-то другой Король.",
   "eternal-potions.command.crowned": "%s коронован как Король %s",

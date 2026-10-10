@@ -5,25 +5,31 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.world.level.saveddata.SavedData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class EternalState extends SavedData {
 
-    public static final String DATA_NAME = "eternal-potions-kings";
-
     public final Map<String, UUID> kings;
     public final Map<String, String> kingNames;
+    public final Map<String, List<String>> pendingRespawns;
 
     public EternalState() {
         this.kings = new HashMap<>();
         this.kingNames = new HashMap<>();
+        this.pendingRespawns = new HashMap<>();
     }
 
-    public EternalState(Map<String, UUID> kings, Map<String, String> kingNames) {
+    public EternalState(Map<String, UUID> kings,
+                        Map<String, String> kingNames,
+                        Map<String, List<String>> pendingRespawns) {
         this.kings = new HashMap<>(kings);
         this.kingNames = new HashMap<>(kingNames);
+        this.pendingRespawns = new HashMap<>();
+        pendingRespawns.forEach((k, v) -> this.pendingRespawns.put(k, new ArrayList<>(v)));
     }
 
     public static final Codec<EternalState> CODEC = RecordCodecBuilder.create(instance ->
@@ -33,7 +39,10 @@ public class EternalState extends SavedData {
                             .forGetter(state -> state.kings),
                     Codec.unboundedMap(Codec.STRING, Codec.STRING)
                             .fieldOf("kingNames")
-                            .forGetter(state -> state.kingNames)
+                            .forGetter(state -> state.kingNames),
+                    Codec.unboundedMap(Codec.STRING, Codec.STRING.listOf())
+                            .optionalFieldOf("pendingRespawns", Map.of())
+                            .forGetter(state -> state.pendingRespawns)
             ).apply(instance, EternalState::new)
     );
 
@@ -59,5 +68,24 @@ public class EternalState extends SavedData {
         kings.remove(effectId);
         kingNames.remove(effectId);
         setDirty();
+    }
+
+    /** Refreshes the stored name if it changed. No-op if unchanged or slot empty. */
+    public void updateKingName(String effectId, String newName) {
+        if (!kingNames.containsKey(effectId)) return;
+        if (newName.equals(kingNames.get(effectId))) return;
+        kingNames.put(effectId, newName);
+        setDirty();
+    }
+
+    public void addPendingRespawn(UUID uuid, String effectId) {
+        pendingRespawns.computeIfAbsent(uuid.toString(), k -> new ArrayList<>()).add(effectId);
+        setDirty();
+    }
+
+    public List<String> takePendingRespawns(UUID uuid) {
+        List<String> result = pendingRespawns.remove(uuid.toString());
+        if (result != null) setDirty();
+        return result;
     }
 }

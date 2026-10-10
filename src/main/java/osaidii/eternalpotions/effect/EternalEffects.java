@@ -57,8 +57,6 @@ public final class EternalEffects {
             AttributeInstance instance = attributes.getInstance(Attributes.MOVEMENT_SPEED);
             if (instance == null) return;
 
-            // Remove the old modifier first — the game calls addAttributeModifiers on
-            // both add and update, and adding a duplicate ID throws.
             AttributeModifier existing = instance.getModifier(MODIFIER_ID);
             if (existing != null) {
                 instance.removeModifier(existing);
@@ -124,7 +122,7 @@ public final class EternalEffects {
     }
 
     // -----------------------------------------------------------------
-    //  Regeneration: heals 1 HP every (33 / level) ticks.
+    //  Regeneration: heals 1 HP every (33 / level) ticks (vanilla is 50 / level).
     // -----------------------------------------------------------------
     public static class EternalRegenerationEffect extends MobEffect {
         public EternalRegenerationEffect() {

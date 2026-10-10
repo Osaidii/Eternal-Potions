@@ -22,6 +22,7 @@
   "eternal-potions.king.all_four_multi": "Todos os quatro tronos foram reivindicados.",
 
   "eternal-potions.command.unknown_effect": "Efeito desconhecido: %s",
+  "eternal-potions.command.already_king": "%s já é o Rei de %s",
   "eternal-potions.command.king_slot_taken": "O posto de Rei de %s está ocupado. %s fica no II.",
   "eternal-potions.command.cannot_reach_iii": "Você não pode alcançar %s III — outra pessoa é o Rei.",
   "eternal-potions.command.crowned": "%s coroado Rei de %s",

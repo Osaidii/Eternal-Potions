@@ -5,6 +5,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
@@ -40,6 +42,18 @@ public class EternalPotionItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
+        // Play drink sound at the start of the animation, like a vanilla potion.
+        level.playSound(
+                null,
+                player.getX(),
+                player.getY(),
+                player.getZ(),
+                SoundEvents.GENERIC_DRINK,
+                SoundSource.PLAYERS,
+                0.5F,
+                0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
+        );
+
         player.startUsingItem(hand);
         return InteractionResult.CONSUME;
     }
@@ -98,6 +112,7 @@ public class EternalPotionItem extends Item {
                 );
 
                 EternalPotions.checkThrones(serverLevel.getServer(), state);
+                EternalPotions.broadcastKings(serverLevel.getServer());
             }
 
             serverPlayer.sendSystemMessage(

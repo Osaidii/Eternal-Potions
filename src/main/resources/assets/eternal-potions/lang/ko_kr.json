@@ -22,6 +22,7 @@
   "eternal-potions.king.all_four_multi": "네 왕좌가 모두 차지되었습니다.",
 
   "eternal-potions.command.unknown_effect": "알 수 없는 효과: %s",
+  "eternal-potions.command.already_king": "%s은(는) 이미 %s의 왕입니다",
   "eternal-potions.command.king_slot_taken": "%s 왕 자리가 있습니다. %s은(는) II에 머뭅니다.",
   "eternal-potions.command.cannot_reach_iii": "%s III에 도달할 수 없습니다 — 다른 사람이 왕입니다.",
   "eternal-potions.command.crowned": "%s을(를) %s의 왕으로 즉위시킴",

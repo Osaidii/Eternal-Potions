@@ -20,15 +20,22 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import osaidii.eternalpotions.BrewWaypoints;
+import osaidii.eternalpotions.BrewingStandAccess;
 import osaidii.eternalpotions.item.ModItems;
 
 @Mixin(BrewingStandBlockEntity.class)
-public class BrewingStandMixin {
+public class BrewingStandMixin implements BrewingStandAccess {
 
     @Shadow private int brewTime;
     @Shadow private int totalBrewTime;
     @Shadow private NonNullList<ItemStack> items;
 
+    @Override
+    public int eternalPotions$getBrewTime() {
+        return this.brewTime;
+    }
+
+    /** True only while the Eternal Shard is actively being consumed. */
     private boolean eternalPotions$isEternalBrew() {
         ItemStack ingredient = this.items.get(3);
         return ingredient != null && !ingredient.isEmpty()
@@ -40,8 +47,6 @@ public class BrewingStandMixin {
     private static void eternalPotions$serverTick(
             ServerLevel level, BlockPos pos, BlockState state,
             BrewingStandBlockEntity entity, CallbackInfo ci) {
-        if (entity == null) return;
-
         BrewingStandMixin self = (BrewingStandMixin)(Object) entity;
 
         if (!self.eternalPotions$isEternalBrew()) return;
@@ -112,14 +117,15 @@ class BrewingStandMenuMixin {
         Slot slot = menu.slots.get(slotId);
         if (!(slot.container instanceof BrewingStandBlockEntity stand)) return;
 
+        // Same rule as eternalPotions$isEternalBrew(): shard present AND brewTime > 0.
+        // When brewing ends, brewTime is 0 and the lock releases even if leftover
+        // shards remain in slot 3.
+        if (!(stand instanceof BrewingStandAccess access)) return;
+        if (access.eternalPotions$getBrewTime() <= 0) return;
+
         ItemStack reagent = stand.getItem(3);
         if (reagent.isEmpty() || !reagent.is(ModItems.ETERNAL_SHARD)) return;
 
-        boolean hasPotion = !stand.getItem(0).isEmpty()
-                || !stand.getItem(1).isEmpty()
-                || !stand.getItem(2).isEmpty();
-        if (hasPotion) {
-            ci.cancel();
-        }
+        ci.cancel();
     }
 }

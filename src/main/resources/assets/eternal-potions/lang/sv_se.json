@@ -22,6 +22,7 @@
   "eternal-potions.king.all_four_multi": "Alla fyra troner har tagits.",
 
   "eternal-potions.command.unknown_effect": "Okänd effekt: %s",
+  "eternal-potions.command.already_king": "%s är redan Kung av %s",
   "eternal-potions.command.king_slot_taken": "%s Kungaplats är upptagen. %s stannar på II.",
   "eternal-potions.command.cannot_reach_iii": "Du kan inte nå %s III — någon annan är Kung.",
   "eternal-potions.command.crowned": "Krönte %s till Kungen av %s",

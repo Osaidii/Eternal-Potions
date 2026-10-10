@@ -22,6 +22,7 @@
   "eternal-potions.king.all_four_multi": "Dört tahtın tamamı ele geçirildi.",
 
   "eternal-potions.command.unknown_effect": "Bilinmeyen etki: %s",
+  "eternal-potions.command.already_king": "%s zaten %s Kralı",
   "eternal-potions.command.king_slot_taken": "%s Kral yeri dolu. %s II'de kalır.",
   "eternal-potions.command.cannot_reach_iii": "%s III seviyesine ulaşamazsın — başkası Kral.",
   "eternal-potions.command.crowned": "%s, %s Kralı olarak taçlandırıldı",

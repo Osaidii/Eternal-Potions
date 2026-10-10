@@ -1,0 +1,45 @@
+{
+  "item.eternal-potions.eternal_shard": "Ewiger Splitter",
+  "item.eternal-potions.eternal_potion": "Der Ewige Trank",
+
+  "effect.eternal-potions.eternal_speed": "Ewige Geschwindigkeit",
+  "effect.eternal-potions.eternal_regeneration": "Ewige Regeneration",
+  "effect.eternal-potions.eternal_resistance": "Ewige Resistenz",
+  "effect.eternal-potions.eternal_strength": "Ewige Stärke",
+
+  "eternal-potions.tooltip.effect_unknown": "Effekt: ???",
+  "eternal-potions.tooltip.reveal_hint": "Rechtsklick zum Enthüllen",
+
+  "eternal-potions.drink.no_effects_left": "Du hast bereits jeden Ewigen Effekt.",
+  "eternal-potions.drink.you_got": "Du erhieltst: %s %s",
+
+  "eternal-potions.king.fallen": "Der König von %s (%s) ist gefallen. Der Thron ist leer.",
+  "eternal-potions.king.crowned": "%s wurde zum König von %s gekrönt!",
+  "eternal-potions.king.crowned_self": "Du bist jetzt König von %s!",
+  "eternal-potions.king.respawn_keep": "Dein königliches Blut bleibt bestehen — du behältst %s II.",
+  "eternal-potions.king.throne_empty": "Der Thron von %s steht erneut leer.",
+  "eternal-potions.king.all_four_single": "%s hat ALLE VIER THRONE beansprucht. Das Ewige gehört ihm.",
+  "eternal-potions.king.all_four_multi": "Alle vier Throne wurden beansprucht.",
+
+  "eternal-potions.command.unknown_effect": "Unbekannter Effekt: %s",
+  "eternal-potions.command.king_slot_taken": "%s-Königsplatz ist besetzt. %s bleibt bei II.",
+  "eternal-potions.command.cannot_reach_iii": "Du kannst %s III nicht erreichen — jemand anderes ist König.",
+  "eternal-potions.command.crowned": "%s zum König von %s gekrönt",
+  "eternal-potions.command.gave_self": "Du erhieltst %s %s",
+  "eternal-potions.command.gave": "%s %s an %s gegeben",
+  "eternal-potions.command.no_effect": "%s hat kein %s",
+  "eternal-potions.command.dethroned_self": "Du wurdest von %s entthront und auf Stufe II zurückgesetzt.",
+  "eternal-potions.command.removed_self": "Dein %s wurde entfernt.",
+  "eternal-potions.command.removed": "%s von %s entfernt",
+  "eternal-potions.command.no_king": "Kein König von %s",
+  "eternal-potions.command.dethroned": "König von %s entthront",
+  "eternal-potions.command.list_empty": "%s: leer",
+  "eternal-potions.command.list_line": "%s: %s",
+
+  "eternal-potions.command.stop.no_stand": "Kein Braustand bei %s, %s, %s",
+  "eternal-potions.command.stop.not_brewing": "Braustand bei %s, %s, %s braut keinen Ewigen Trank",
+  "eternal-potions.command.stop.destroyed": "Ewiges Gebräu bei %s, %s, %s gestoppt und zerstört",
+
+  "eternal-potions.brew.started": "[Server] Ein Gebräu wurde bei %s, %s, %s begonnen",
+  "eternal-potions.brew.stopped": "[Server] Das Ewige Gebräu bei %s, %s, %s wurde gestoppt und zerstört."
+}

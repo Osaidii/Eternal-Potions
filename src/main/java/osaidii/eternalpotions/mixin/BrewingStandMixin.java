@@ -19,16 +19,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import osaidii.eternalpotions.BrewWaypoints;
 import osaidii.eternalpotions.item.ModItems;
 
-/**
- * All brewing-stand mixins live here.
- *   - BrewingStandMixin      (public)   → block-entity side: brew time, centering, hopper lock, broadcast
- *   - BrewingStandMenuMixin  (package-private) → container-menu side: GUI click lock
- *
- * Java allows multiple top-level classes in one file as long as only one is public,
- * and its name matches the filename.
- */
 @Mixin(BrewingStandBlockEntity.class)
 public class BrewingStandMixin {
 
@@ -53,15 +46,16 @@ public class BrewingStandMixin {
 
         if (!self.eternalPotions$isEternalBrew()) return;
 
-        // First tick where we recognise this as an Eternal brew → 10min timer + broadcast.
         boolean firstEternalTick = self.totalBrewTime != 12000;
         if (firstEternalTick) {
             int elapsed = self.totalBrewTime - self.brewTime;
             self.totalBrewTime = 12000;
             self.brewTime = 12000 - Math.max(0, elapsed);
 
-            Component msg = Component.literal("[Server] A brew has begun at ")
-                    .append(Component.literal(pos.getX() + ", " + pos.getY() + ", " + pos.getZ()))
+            BrewWaypoints.startBrew(level, pos);
+
+            Component msg = Component.translatable("eternal-potions.brew.started",
+                            pos.getX(), pos.getY(), pos.getZ())
                     .withStyle(ChatFormatting.LIGHT_PURPLE);
             level.getServer().getPlayerList().broadcastSystemMessage(msg, false);
         }
@@ -104,9 +98,6 @@ public class BrewingStandMixin {
     }
 }
 
-// ---------------------------------------------------------------------------
-//  Container-menu side
-// ---------------------------------------------------------------------------
 @Mixin(AbstractContainerMenu.class)
 class BrewingStandMenuMixin {
 

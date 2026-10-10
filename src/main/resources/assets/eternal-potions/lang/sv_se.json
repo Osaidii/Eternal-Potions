@@ -1,0 +1,45 @@
+{
+  "item.eternal-potions.eternal_shard": "Evig Skärva",
+  "item.eternal-potions.eternal_potion": "Den Eviga Drycken",
+
+  "effect.eternal-potions.eternal_speed": "Evig Hastighet",
+  "effect.eternal-potions.eternal_regeneration": "Evig Regeneration",
+  "effect.eternal-potions.eternal_resistance": "Evigt Motstånd",
+  "effect.eternal-potions.eternal_strength": "Evig Styrka",
+
+  "eternal-potions.tooltip.effect_unknown": "Effekt: ???",
+  "eternal-potions.tooltip.reveal_hint": "Högerklicka för att avslöja",
+
+  "eternal-potions.drink.no_effects_left": "Du har redan alla Eviga effekter.",
+  "eternal-potions.drink.you_got": "Du fick: %s %s",
+
+  "eternal-potions.king.fallen": "Kungen av %s (%s) har fallit. Tronen är tom.",
+  "eternal-potions.king.crowned": "%s har krönts till Kungen av %s!",
+  "eternal-potions.king.crowned_self": "Du är nu Kungen av %s!",
+  "eternal-potions.king.respawn_keep": "Ditt kungliga blod består — du behåller %s II.",
+  "eternal-potions.king.throne_empty": "Tronen av %s står åter tom.",
+  "eternal-potions.king.all_four_single": "%s har tagit ALLA FYRA TRONER. Det Eviga tillhör dem.",
+  "eternal-potions.king.all_four_multi": "Alla fyra troner har tagits.",
+
+  "eternal-potions.command.unknown_effect": "Okänd effekt: %s",
+  "eternal-potions.command.king_slot_taken": "%s Kungaplats är upptagen. %s stannar på II.",
+  "eternal-potions.command.cannot_reach_iii": "Du kan inte nå %s III — någon annan är Kung.",
+  "eternal-potions.command.crowned": "Krönte %s till Kungen av %s",
+  "eternal-potions.command.gave_self": "Du fick %s %s",
+  "eternal-potions.command.gave": "Gav %s %s till %s",
+  "eternal-potions.command.no_effect": "%s har inte %s",
+  "eternal-potions.command.dethroned_self": "Du har avsatts från %s och nedgraderats till Nivå II.",
+  "eternal-potions.command.removed_self": "Din %s togs bort.",
+  "eternal-potions.command.removed": "Tog bort %s från %s",
+  "eternal-potions.command.no_king": "Ingen Kung av %s",
+  "eternal-potions.command.dethroned": "Avsatte Kungen av %s",
+  "eternal-potions.command.list_empty": "%s: tom",
+  "eternal-potions.command.list_line": "%s: %s",
+
+  "eternal-potions.command.stop.no_stand": "Ingen bryggställning vid %s, %s, %s",
+  "eternal-potions.command.stop.not_brewing": "Bryggställningen vid %s, %s, %s brygger inte en Evig Dryck",
+  "eternal-potions.command.stop.destroyed": "Evig bryggning vid %s, %s, %s stoppad och förstörd",
+
+  "eternal-potions.brew.started": "[Server] En bryggning har börjat vid %s, %s, %s",
+  "eternal-potions.brew.stopped": "[Server] Den Eviga bryggningen vid %s, %s, %s har stoppats och förstörts."
+}

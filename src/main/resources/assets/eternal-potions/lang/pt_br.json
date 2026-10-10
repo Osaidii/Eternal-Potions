@@ -1,0 +1,45 @@
+{
+  "item.eternal-potions.eternal_shard": "Fragmento Eterno",
+  "item.eternal-potions.eternal_potion": "A Poção Eterna",
+
+  "effect.eternal-potions.eternal_speed": "Velocidade Eterna",
+  "effect.eternal-potions.eternal_regeneration": "Regeneração Eterna",
+  "effect.eternal-potions.eternal_resistance": "Resistência Eterna",
+  "effect.eternal-potions.eternal_strength": "Força Eterna",
+
+  "eternal-potions.tooltip.effect_unknown": "Efeito: ???",
+  "eternal-potions.tooltip.reveal_hint": "Clique direito para revelar",
+
+  "eternal-potions.drink.no_effects_left": "Você já tem todos os efeitos Eternos.",
+  "eternal-potions.drink.you_got": "Você recebeu: %s %s",
+
+  "eternal-potions.king.fallen": "O Rei de %s (%s) caiu. O trono está vazio.",
+  "eternal-potions.king.crowned": "%s foi coroado Rei de %s!",
+  "eternal-potions.king.crowned_self": "Agora você é o Rei de %s!",
+  "eternal-potions.king.respawn_keep": "Seu sangue real perdura — você mantém %s II.",
+  "eternal-potions.king.throne_empty": "O trono de %s está vazio novamente.",
+  "eternal-potions.king.all_four_single": "%s reivindicou TODOS OS QUATRO TRONOS. O Eterno pertence a ele.",
+  "eternal-potions.king.all_four_multi": "Todos os quatro tronos foram reivindicados.",
+
+  "eternal-potions.command.unknown_effect": "Efeito desconhecido: %s",
+  "eternal-potions.command.king_slot_taken": "O posto de Rei de %s está ocupado. %s fica no II.",
+  "eternal-potions.command.cannot_reach_iii": "Você não pode alcançar %s III — outra pessoa é o Rei.",
+  "eternal-potions.command.crowned": "%s coroado Rei de %s",
+  "eternal-potions.command.gave_self": "Você recebeu %s %s",
+  "eternal-potions.command.gave": "%s %s dado a %s",
+  "eternal-potions.command.no_effect": "%s não tem %s",
+  "eternal-potions.command.dethroned_self": "Você foi destronado de %s e rebaixado ao Nível II.",
+  "eternal-potions.command.removed_self": "Seu %s foi removido.",
+  "eternal-potions.command.removed": "%s removido de %s",
+  "eternal-potions.command.no_king": "Nenhum Rei de %s",
+  "eternal-potions.command.dethroned": "Rei de %s destronado",
+  "eternal-potions.command.list_empty": "%s: vazio",
+  "eternal-potions.command.list_line": "%s: %s",
+
+  "eternal-potions.command.stop.no_stand": "Nenhum suporte de poções em %s, %s, %s",
+  "eternal-potions.command.stop.not_brewing": "O suporte em %s, %s, %s não está preparando uma Poção Eterna",
+  "eternal-potions.command.stop.destroyed": "Preparação Eterna em %s, %s, %s interrompida e destruída",
+
+  "eternal-potions.brew.started": "[Servidor] Uma preparação começou em %s, %s, %s",
+  "eternal-potions.brew.stopped": "[Servidor] A preparação Eterna em %s, %s, %s foi interrompida e destruída."
+}

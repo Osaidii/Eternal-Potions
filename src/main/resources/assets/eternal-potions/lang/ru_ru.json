@@ -1,0 +1,45 @@
+{
+  "item.eternal-potions.eternal_shard": "Вечный осколок",
+  "item.eternal-potions.eternal_potion": "Вечное зелье",
+
+  "effect.eternal-potions.eternal_speed": "Вечная скорость",
+  "effect.eternal-potions.eternal_regeneration": "Вечная регенерация",
+  "effect.eternal-potions.eternal_resistance": "Вечная устойчивость",
+  "effect.eternal-potions.eternal_strength": "Вечная сила",
+
+  "eternal-potions.tooltip.effect_unknown": "Эффект: ???",
+  "eternal-potions.tooltip.reveal_hint": "ПКМ для раскрытия",
+
+  "eternal-potions.drink.no_effects_left": "У вас уже есть все Вечные эффекты.",
+  "eternal-potions.drink.you_got": "Вы получили: %s %s",
+
+  "eternal-potions.king.fallen": "Король %s (%s) пал. Трон пуст.",
+  "eternal-potions.king.crowned": "%s коронован как Король %s!",
+  "eternal-potions.king.crowned_self": "Теперь вы Король %s!",
+  "eternal-potions.king.respawn_keep": "Ваша королевская кровь жива — вы сохраняете %s II.",
+  "eternal-potions.king.throne_empty": "Трон %s снова пуст.",
+  "eternal-potions.king.all_four_single": "%s захватил ВСЕ ЧЕТЫРЕ ТРОНА. Вечное принадлежит ему.",
+  "eternal-potions.king.all_four_multi": "Все четыре трона захвачены.",
+
+  "eternal-potions.command.unknown_effect": "Неизвестный эффект: %s",
+  "eternal-potions.command.king_slot_taken": "Место Короля %s занято. %s остаётся на II.",
+  "eternal-potions.command.cannot_reach_iii": "Вы не можете достичь %s III — кто-то другой Король.",
+  "eternal-potions.command.crowned": "%s коронован как Король %s",
+  "eternal-potions.command.gave_self": "Вы получили %s %s",
+  "eternal-potions.command.gave": "%s %s выдан %s",
+  "eternal-potions.command.no_effect": "У %s нет %s",
+  "eternal-potions.command.dethroned_self": "Вы свергнуты с %s и понижены до Уровня II.",
+  "eternal-potions.command.removed_self": "Ваш %s был удалён.",
+  "eternal-potions.command.removed": "%s удалён у %s",
+  "eternal-potions.command.no_king": "Нет Короля %s",
+  "eternal-potions.command.dethroned": "Король %s свергнут",
+  "eternal-potions.command.list_empty": "%s: пусто",
+  "eternal-potions.command.list_line": "%s: %s",
+
+  "eternal-potions.command.stop.no_stand": "Нет варочной стойки по координатам %s, %s, %s",
+  "eternal-potions.command.stop.not_brewing": "Варочная стойка по координатам %s, %s, %s не готовит Вечное зелье",
+  "eternal-potions.command.stop.destroyed": "Вечное варево по координатам %s, %s, %s остановлено и уничтожено",
+
+  "eternal-potions.brew.started": "[Сервер] Варево начато по координатам %s, %s, %s",
+  "eternal-potions.brew.stopped": "[Сервер] Вечное варево по координатам %s, %s, %s остановлено и уничтожено."
+}

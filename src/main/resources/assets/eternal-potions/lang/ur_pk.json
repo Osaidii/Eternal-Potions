@@ -1,0 +1,45 @@
+{
+  "item.eternal-potions.eternal_shard": "ابدی ٹکڑا",
+  "item.eternal-potions.eternal_potion": "ابدی جراب",
+
+  "effect.eternal-potions.eternal_speed": "ابدی رفتار",
+  "effect.eternal-potions.eternal_regeneration": "ابدی باز پیدائش",
+  "effect.eternal-potions.eternal_resistance": "ابدی مزاحمت",
+  "effect.eternal-potions.eternal_strength": "ابدی طاقت",
+
+  "eternal-potions.tooltip.effect_unknown": "اثر: ???",
+  "eternal-potions.tooltip.reveal_hint": "ظاہر کرنے کے لیے دائیں کلک کریں",
+
+  "eternal-potions.drink.no_effects_left": "آپ کے پاس پہلے ہی تمام ابدی اثرات موجود ہیں۔",
+  "eternal-potions.drink.you_got": "آپ کو ملا: %s %s",
+
+  "eternal-potions.king.fallen": "%s کا بادشاہ (%s) گر گیا۔ تخت خالی ہے۔",
+  "eternal-potions.king.crowned": "%s کو %s کا بادشاہ تاج پہنایا گیا!",
+  "eternal-potions.king.crowned_self": "اب آپ %s کے بادشاہ ہیں!",
+  "eternal-potions.king.respawn_keep": "آپ کا شاہی خون باقی ہے — آپ %s II رکھتے ہیں۔",
+  "eternal-potions.king.throne_empty": "%s کا تخت پھر خالی ہو گیا۔",
+  "eternal-potions.king.all_four_single": "%s نے چاروں تختوں پر قبضہ کر لیا۔ ابدی اسی کا ہے۔",
+  "eternal-potions.king.all_four_multi": "چاروں تختوں پر قبضہ ہو چکا ہے۔",
+
+  "eternal-potions.command.unknown_effect": "نامعلوم اثر: %s",
+  "eternal-potions.command.king_slot_taken": "%s بادشاہ کی جگہ پر قبضہ ہے۔ %s II پر رہے گا۔",
+  "eternal-potions.command.cannot_reach_iii": "آپ %s III تک نہیں پہنچ سکتے — کوئی اور بادشاہ ہے۔",
+  "eternal-potions.command.crowned": "%s کو %s کا بادشاہ بنایا گیا",
+  "eternal-potions.command.gave_self": "آپ کو %s %s دیا گیا",
+  "eternal-potions.command.gave": "%s %s، %s کو دیا گیا",
+  "eternal-potions.command.no_effect": "%s کے پاس %s نہیں ہے",
+  "eternal-potions.command.dethroned_self": "آپ کو %s سے معزول کر دیا گیا اور لیول II پر گرادیا گیا۔",
+  "eternal-potions.command.removed_self": "آپ کا %s ہٹا دیا گیا۔",
+  "eternal-potions.command.removed": "%s کو %s سے ہٹا دیا گیا",
+  "eternal-potions.command.no_king": "%s کا کوئی بادشاہ نہیں",
+  "eternal-potions.command.dethroned": "%s کا بادشاہ معزول کر دیا گیا",
+  "eternal-potions.command.list_empty": "%s: خالی",
+  "eternal-potions.command.list_line": "%s: %s",
+
+  "eternal-potions.command.stop.no_stand": "%s, %s, %s پر کوئی بریونگ اسٹینڈ نہیں",
+  "eternal-potions.command.stop.not_brewing": "%s, %s, %s کا بریونگ اسٹینڈ ابدی جراب نہیں بنا رہا",
+  "eternal-potions.command.stop.destroyed": "%s, %s, %s پر ابدی بریونگ روک کر تباہ کر دیا گیا",
+
+  "eternal-potions.brew.started": "[سرور] %s, %s, %s پر بریونگ شروع ہوئی",
+  "eternal-potions.brew.stopped": "[سرور] %s, %s, %s پر ابدی بریونگ روک کر تباہ کر دیا گیا۔"
+}

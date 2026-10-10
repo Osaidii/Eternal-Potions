@@ -1,0 +1,45 @@
+{
+  "item.eternal-potions.eternal_shard": "Wieczny Odłamek",
+  "item.eternal-potions.eternal_potion": "Wieczna Mikstura",
+
+  "effect.eternal-potions.eternal_speed": "Wieczna Szybkość",
+  "effect.eternal-potions.eternal_regeneration": "Wieczna Regeneracja",
+  "effect.eternal-potions.eternal_resistance": "Wieczna Odporność",
+  "effect.eternal-potions.eternal_strength": "Wieczna Siła",
+
+  "eternal-potions.tooltip.effect_unknown": "Efekt: ???",
+  "eternal-potions.tooltip.reveal_hint": "PPM aby ujawnić",
+
+  "eternal-potions.drink.no_effects_left": "Masz już wszystkie Wieczne efekty.",
+  "eternal-potions.drink.you_got": "Otrzymałeś: %s %s",
+
+  "eternal-potions.king.fallen": "Król %s (%s) upadł. Tron jest pusty.",
+  "eternal-potions.king.crowned": "%s został koronowany na Króla %s!",
+  "eternal-potions.king.crowned_self": "Jesteś teraz Królem %s!",
+  "eternal-potions.king.respawn_keep": "Twoja królewska krew przetrwała — zachowujesz %s II.",
+  "eternal-potions.king.throne_empty": "Tron %s znów jest pusty.",
+  "eternal-potions.king.all_four_single": "%s przejął WSZYSTKIE CZTERY TRONY. Wieczność należy do niego.",
+  "eternal-potions.king.all_four_multi": "Wszystkie cztery trony zostały przejęte.",
+
+  "eternal-potions.command.unknown_effect": "Nieznany efekt: %s",
+  "eternal-potions.command.king_slot_taken": "Miejsce Króla %s jest zajęte. %s pozostaje na II.",
+  "eternal-potions.command.cannot_reach_iii": "Nie możesz osiągnąć %s III — ktoś inny jest Królem.",
+  "eternal-potions.command.crowned": "%s koronowany na Króla %s",
+  "eternal-potions.command.gave_self": "Otrzymałeś %s %s",
+  "eternal-potions.command.gave": "%s %s przyznano %s",
+  "eternal-potions.command.no_effect": "%s nie ma %s",
+  "eternal-potions.command.dethroned_self": "Zostałeś zdetronizowany z %s i obniżony do Poziomu II.",
+  "eternal-potions.command.removed_self": "Twój %s został usunięty.",
+  "eternal-potions.command.removed": "%s usunięto od %s",
+  "eternal-potions.command.no_king": "Brak Króla %s",
+  "eternal-potions.command.dethroned": "Król %s zdetronizowany",
+  "eternal-potions.command.list_empty": "%s: puste",
+  "eternal-potions.command.list_line": "%s: %s",
+
+  "eternal-potions.command.stop.no_stand": "Brak stojaka do warzenia na %s, %s, %s",
+  "eternal-potions.command.stop.not_brewing": "Stojak na %s, %s, %s nie warzy Wiecznej Mikstury",
+  "eternal-potions.command.stop.destroyed": "Wieczne warzenie na %s, %s, %s zatrzymane i zniszczone",
+
+  "eternal-potions.brew.started": "[Serwer] Warzenie rozpoczęte na %s, %s, %s",
+  "eternal-potions.brew.stopped": "[Serwer] Wieczne warzenie na %s, %s, %s zostało zatrzymane i zniszczone."
+}

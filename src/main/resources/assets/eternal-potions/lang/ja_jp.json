@@ -1,0 +1,45 @@
+{
+  "item.eternal-potions.eternal_shard": "永遠の欠片",
+  "item.eternal-potions.eternal_potion": "永遠のポーション",
+
+  "effect.eternal-potions.eternal_speed": "永遠の速さ",
+  "effect.eternal-potions.eternal_regeneration": "永遠の再生",
+  "effect.eternal-potions.eternal_resistance": "永遠の耐性",
+  "effect.eternal-potions.eternal_strength": "永遠の力",
+
+  "eternal-potions.tooltip.effect_unknown": "効果: ???",
+  "eternal-potions.tooltip.reveal_hint": "右クリックで明かす",
+
+  "eternal-potions.drink.no_effects_left": "あなたは既に全ての永遠の効果を持っています。",
+  "eternal-potions.drink.you_got": "獲得: %s %s",
+
+  "eternal-potions.king.fallen": "%sの王（%s）が倒れました。玉座は空です。",
+  "eternal-potions.king.crowned": "%sが%sの王として戴冠しました！",
+  "eternal-potions.king.crowned_self": "あなたは今、%sの王です！",
+  "eternal-potions.king.respawn_keep": "王家の血は続く — %s IIを保持します。",
+  "eternal-potions.king.throne_empty": "%sの玉座が再び空になりました。",
+  "eternal-potions.king.all_four_single": "%sが四つの玉座全てを手中に収めました。永遠は彼のものです。",
+  "eternal-potions.king.all_four_multi": "四つの玉座が全て占められました。",
+
+  "eternal-potions.command.unknown_effect": "不明な効果: %s",
+  "eternal-potions.command.king_slot_taken": "%sの王の座は埋まっています。%sはIIのままです。",
+  "eternal-potions.command.cannot_reach_iii": "%s IIIには到達できません — 他の誰かが王です。",
+  "eternal-potions.command.crowned": "%sを%sの王として戴冠",
+  "eternal-potions.command.gave_self": "%s %sを付与されました",
+  "eternal-potions.command.gave": "%s %sを%sに付与",
+  "eternal-potions.command.no_effect": "%sは%sを持っていません",
+  "eternal-potions.command.dethroned_self": "あなたは%sから退位させられ、レベルIIに下がりました。",
+  "eternal-potions.command.removed_self": "あなたの%sが削除されました。",
+  "eternal-potions.command.removed": "%sから%sを削除",
+  "eternal-potions.command.no_king": "%sの王はいません",
+  "eternal-potions.command.dethroned": "%sの王を退位させました",
+  "eternal-potions.command.list_empty": "%s: 空",
+  "eternal-potions.command.list_line": "%s: %s",
+
+  "eternal-potions.command.stop.no_stand": "%s, %s, %sに醸造台がありません",
+  "eternal-potions.command.stop.not_brewing": "%s, %s, %sの醸造台は永遠のポーションを醸造していません",
+  "eternal-potions.command.stop.destroyed": "%s, %s, %sの永遠の醸造を停止し破壊しました",
+
+  "eternal-potions.brew.started": "[サーバー] %s, %s, %sで醸造が始まりました",
+  "eternal-potions.brew.stopped": "[サーバー] %s, %s, %sの永遠の醸造が停止・破壊されました。"
+}

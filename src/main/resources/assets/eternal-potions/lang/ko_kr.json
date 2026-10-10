@@ -1,0 +1,45 @@
+{
+  "item.eternal-potions.eternal_shard": "영원의 조각",
+  "item.eternal-potions.eternal_potion": "영원의 물약",
+
+  "effect.eternal-potions.eternal_speed": "영원의 속도",
+  "effect.eternal-potions.eternal_regeneration": "영원의 재생",
+  "effect.eternal-potions.eternal_resistance": "영원의 저항",
+  "effect.eternal-potions.eternal_strength": "영원의 힘",
+
+  "eternal-potions.tooltip.effect_unknown": "효과: ???",
+  "eternal-potions.tooltip.reveal_hint": "우클릭하여 공개",
+
+  "eternal-potions.drink.no_effects_left": "이미 모든 영원 효과를 가지고 있습니다.",
+  "eternal-potions.drink.you_got": "획득: %s %s",
+
+  "eternal-potions.king.fallen": "%s의 왕(%s)이 쓰러졌습니다. 왕좌가 비었습니다.",
+  "eternal-potions.king.crowned": "%s이(가) %s의 왕으로 즉위했습니다!",
+  "eternal-potions.king.crowned_self": "당신은 이제 %s의 왕입니다!",
+  "eternal-potions.king.respawn_keep": "왕가의 피는 계속됩니다 — %s II를 유지합니다.",
+  "eternal-potions.king.throne_empty": "%s의 왕좌가 다시 비었습니다.",
+  "eternal-potions.king.all_four_single": "%s이(가) 네 왕좌를 모두 차지했습니다. 영원은 그들의 것입니다.",
+  "eternal-potions.king.all_four_multi": "네 왕좌가 모두 차지되었습니다.",
+
+  "eternal-potions.command.unknown_effect": "알 수 없는 효과: %s",
+  "eternal-potions.command.king_slot_taken": "%s 왕 자리가 있습니다. %s은(는) II에 머뭅니다.",
+  "eternal-potions.command.cannot_reach_iii": "%s III에 도달할 수 없습니다 — 다른 사람이 왕입니다.",
+  "eternal-potions.command.crowned": "%s을(를) %s의 왕으로 즉위시킴",
+  "eternal-potions.command.gave_self": "%s %s을(를) 받았습니다",
+  "eternal-potions.command.gave": "%s %s을(를) %s에게 부여",
+  "eternal-potions.command.no_effect": "%s에게 %s이(가) 없습니다",
+  "eternal-potions.command.dethroned_self": "%s에서 폐위되어 레벨 II로 떨어졌습니다.",
+  "eternal-potions.command.removed_self": "%s이(가) 제거되었습니다.",
+  "eternal-potions.command.removed": "%s에서 %s 제거",
+  "eternal-potions.command.no_king": "%s의 왕이 없습니다",
+  "eternal-potions.command.dethroned": "%s의 왕을 폐위시킴",
+  "eternal-potions.command.list_empty": "%s: 비어 있음",
+  "eternal-potions.command.list_line": "%s: %s",
+
+  "eternal-potions.command.stop.no_stand": "%s, %s, %s에 양조기가 없습니다",
+  "eternal-potions.command.stop.not_brewing": "%s, %s, %s의 양조기가 영원의 물약을 양조하고 있지 않습니다",
+  "eternal-potions.command.stop.destroyed": "%s, %s, %s의 영원 양조를 중단하고 파괴했습니다",
+
+  "eternal-potions.brew.started": "[서버] %s, %s, %s에서 양조가 시작되었습니다",
+  "eternal-potions.brew.stopped": "[서버] %s, %s, %s의 영원 양조가 중단·파괴되었습니다."
+}

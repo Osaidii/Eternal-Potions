@@ -1,0 +1,45 @@
+{
+  "item.eternal-potions.eternal_shard": "永恒碎片",
+  "item.eternal-potions.eternal_potion": "永恒药水",
+
+  "effect.eternal-potions.eternal_speed": "永恒速度",
+  "effect.eternal-potions.eternal_regeneration": "永恒再生",
+  "effect.eternal-potions.eternal_resistance": "永恒抗性",
+  "effect.eternal-potions.eternal_strength": "永恒力量",
+
+  "eternal-potions.tooltip.effect_unknown": "效果：？？？",
+  "eternal-potions.tooltip.reveal_hint": "右键点击以揭示",
+
+  "eternal-potions.drink.no_effects_left": "你已经拥有所有永恒效果。",
+  "eternal-potions.drink.you_got": "你获得了：%s %s",
+
+  "eternal-potions.king.fallen": "%s之王（%s）已陨落。王座已空。",
+  "eternal-potions.king.crowned": "%s已被加冕为%s之王！",
+  "eternal-potions.king.crowned_self": "你现在是%s之王！",
+  "eternal-potions.king.respawn_keep": "你的王族血脉长存——你保留了%s II。",
+  "eternal-potions.king.throne_empty": "%s的王座再次空置。",
+  "eternal-potions.king.all_four_single": "%s夺取了全部四座王座。永恒属于他。",
+  "eternal-potions.king.all_four_multi": "四座王座已被全部占领。",
+
+  "eternal-potions.command.unknown_effect": "未知效果：%s",
+  "eternal-potions.command.king_slot_taken": "%s之王位置已被占据。%s停留在II。",
+  "eternal-potions.command.cannot_reach_iii": "你无法达到%s III——其他人已是王。",
+  "eternal-potions.command.crowned": "已将%s加冕为%s之王",
+  "eternal-potions.command.gave_self": "你获得了%s %s",
+  "eternal-potions.command.gave": "已将%s %s给予%s",
+  "eternal-potions.command.no_effect": "%s没有%s",
+  "eternal-potions.command.dethroned_self": "你已被从%s废黜并降至II级。",
+  "eternal-potions.command.removed_self": "你的%s已被移除。",
+  "eternal-potions.command.removed": "已从%s移除%s",
+  "eternal-potions.command.no_king": "没有%s之王",
+  "eternal-potions.command.dethroned": "已废黜%s之王",
+  "eternal-potions.command.list_empty": "%s：空",
+  "eternal-potions.command.list_line": "%s：%s",
+
+  "eternal-potions.command.stop.no_stand": "%s, %s, %s处没有酿造台",
+  "eternal-potions.command.stop.not_brewing": "%s, %s, %s处的酿造台没有在酿造永恒药水",
+  "eternal-potions.command.stop.destroyed": "%s, %s, %s处的永恒酿造已停止并摧毁",
+
+  "eternal-potions.brew.started": "[服务器] 在%s, %s, %s处开始了酿造",
+  "eternal-potions.brew.stopped": "[服务器] %s, %s, %s处的永恒酿造已被停止并摧毁。"
+}

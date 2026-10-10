@@ -1,0 +1,45 @@
+{
+  "item.eternal-potions.eternal_shard": "Ebedi Parça",
+  "item.eternal-potions.eternal_potion": "Ebedi İksir",
+
+  "effect.eternal-potions.eternal_speed": "Ebedi Hız",
+  "effect.eternal-potions.eternal_regeneration": "Ebedi Yenilenme",
+  "effect.eternal-potions.eternal_resistance": "Ebedi Direnç",
+  "effect.eternal-potions.eternal_strength": "Ebedi Güç",
+
+  "eternal-potions.tooltip.effect_unknown": "Etki: ???",
+  "eternal-potions.tooltip.reveal_hint": "Açığa çıkarmak için sağ tıkla",
+
+  "eternal-potions.drink.no_effects_left": "Zaten tüm Ebedi etkilere sahipsin.",
+  "eternal-potions.drink.you_got": "Aldın: %s %s",
+
+  "eternal-potions.king.fallen": "%s Kralı (%s) düştü. Taht boş.",
+  "eternal-potions.king.crowned": "%s, %s Kralı olarak taçlandırıldı!",
+  "eternal-potions.king.crowned_self": "Artık %s Kralısın!",
+  "eternal-potions.king.respawn_keep": "Kraliyet kanın devam ediyor — %s II'yi koruyorsun.",
+  "eternal-potions.king.throne_empty": "%s tahtı yeniden boş.",
+  "eternal-potions.king.all_four_single": "%s DÖRT TAHTIN TAMAMINI ele geçirdi. Ebedi ona ait.",
+  "eternal-potions.king.all_four_multi": "Dört tahtın tamamı ele geçirildi.",
+
+  "eternal-potions.command.unknown_effect": "Bilinmeyen etki: %s",
+  "eternal-potions.command.king_slot_taken": "%s Kral yeri dolu. %s II'de kalır.",
+  "eternal-potions.command.cannot_reach_iii": "%s III seviyesine ulaşamazsın — başkası Kral.",
+  "eternal-potions.command.crowned": "%s, %s Kralı olarak taçlandırıldı",
+  "eternal-potions.command.gave_self": "Sana %s %s verildi",
+  "eternal-potions.command.gave": "%s %s, %s oyuncusuna verildi",
+  "eternal-potions.command.no_effect": "%s oyuncusunda %s yok",
+  "eternal-potions.command.dethroned_self": "%s tahtından indirildin ve Seviye II'ye düşürüldün.",
+  "eternal-potions.command.removed_self": "%s kaldırıldı.",
+  "eternal-potions.command.removed": "%s, %s oyuncusundan kaldırıldı",
+  "eternal-potions.command.no_king": "%s Kralı yok",
+  "eternal-potions.command.dethroned": "%s Kralı tahttan indirildi",
+  "eternal-potions.command.list_empty": "%s: boş",
+  "eternal-potions.command.list_line": "%s: %s",
+
+  "eternal-potions.command.stop.no_stand": "%s, %s, %s konumunda iksir standı yok",
+  "eternal-potions.command.stop.not_brewing": "%s, %s, %s konumundaki stand Ebedi İksir demlemiyor",
+  "eternal-potions.command.stop.destroyed": "%s, %s, %s konumundaki Ebedi demleme durduruldu ve yok edildi",
+
+  "eternal-potions.brew.started": "[Sunucu] %s, %s, %s konumunda bir demleme başladı",
+  "eternal-potions.brew.stopped": "[Sunucu] %s, %s, %s konumundaki Ebedi demleme durduruldu ve yok edildi."
+}

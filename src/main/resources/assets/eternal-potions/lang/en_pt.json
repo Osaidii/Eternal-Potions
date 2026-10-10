@@ -1,0 +1,45 @@
+{
+  "item.eternal-potions.eternal_shard": "Shard o' Eternity",
+  "item.eternal-potions.eternal_potion": "The Eternal Brew",
+
+  "effect.eternal-potions.eternal_speed": "Eternal Swiftness",
+  "effect.eternal-potions.eternal_regeneration": "Eternal Healin'",
+  "effect.eternal-potions.eternal_resistance": "Eternal Hardiness",
+  "effect.eternal-potions.eternal_strength": "Eternal Might",
+
+  "eternal-potions.tooltip.effect_unknown": "Effect: ???",
+  "eternal-potions.tooltip.reveal_hint": "Right-click t' reveal",
+
+  "eternal-potions.drink.no_effects_left": "Ye already hold every Eternal effect, matey.",
+  "eternal-potions.drink.you_got": "Ye got: %s %s",
+
+  "eternal-potions.king.fallen": "The King o' %s (%s) has fallen. The throne be empty.",
+  "eternal-potions.king.crowned": "%s has been crowned King o' %s!",
+  "eternal-potions.king.crowned_self": "Ye be King o' %s now!",
+  "eternal-potions.king.respawn_keep": "Yer royal blood endures — ye keep %s II.",
+  "eternal-potions.king.throne_empty": "The throne o' %s sits empty once more.",
+  "eternal-potions.king.all_four_single": "%s has claimed ALL FOUR THRONES. The Eternal be theirs.",
+  "eternal-potions.king.all_four_multi": "All four thrones have been claimed.",
+
+  "eternal-potions.command.unknown_effect": "Unknown effect: %s",
+  "eternal-potions.command.king_slot_taken": "%s King's chair be taken. %s stays at II.",
+  "eternal-potions.command.cannot_reach_iii": "Ye cannot reach %s III — another soul be King.",
+  "eternal-potions.command.crowned": "Crowned %s as King o' %s",
+  "eternal-potions.command.gave_self": "Ye were given %s %s",
+  "eternal-potions.command.gave": "Gave %s %s to %s",
+  "eternal-potions.command.no_effect": "%s ain't got %s",
+  "eternal-potions.command.dethroned_self": "Ye have been dethroned from %s and dropped to Level II.",
+  "eternal-potions.command.removed_self": "Yer %s was removed.",
+  "eternal-potions.command.removed": "Removed %s from %s",
+  "eternal-potions.command.no_king": "No King o' %s",
+  "eternal-potions.command.dethroned": "Dethroned the King o' %s",
+  "eternal-potions.command.list_empty": "%s: empty",
+  "eternal-potions.command.list_line": "%s: %s",
+
+  "eternal-potions.command.stop.no_stand": "No brewing stand at %s, %s, %s",
+  "eternal-potions.command.stop.not_brewing": "The brewing stand at %s, %s, %s ain't brewin' an Eternal Potion",
+  "eternal-potions.command.stop.destroyed": "Stopped an' scuttled the Eternal brew at %s, %s, %s",
+
+  "eternal-potions.brew.started": "[Server] A brew has begun at %s, %s, %s",
+  "eternal-potions.brew.stopped": "[Server] The Eternal brew at %s, %s, %s has been stopped an' scuttled."
+}

@@ -9,7 +9,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -20,6 +19,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import osaidii.eternalpotions.EternalPotions;
 import osaidii.eternalpotions.EternalState;
+import osaidii.eternalpotions.effect.EternalEffects;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,22 +28,14 @@ import java.util.function.Consumer;
 public class EternalPotionItem extends Item {
 
     private static final List<Holder<MobEffect>> BIG_FOUR = List.of(
-            MobEffects.SPEED,
-            MobEffects.REGENERATION,
-            MobEffects.RESISTANCE,
-            MobEffects.STRENGTH
+            EternalEffects.ETERNAL_SPEED,
+            EternalEffects.ETERNAL_REGENERATION,
+            EternalEffects.ETERNAL_RESISTANCE,
+            EternalEffects.ETERNAL_STRENGTH
     );
 
     public EternalPotionItem(Properties properties) {
         super(properties);
-    }
-
-    private static String getEffectDisplayName(Holder<MobEffect> effect) {
-        if (effect == MobEffects.SPEED) return "Speed";
-        if (effect == MobEffects.REGENERATION) return "Regeneration";
-        if (effect == MobEffects.RESISTANCE) return "Resistance";
-        if (effect == MobEffects.STRENGTH) return "Strength";
-        return "Unknown";
     }
 
     @Override
@@ -78,7 +70,7 @@ public class EternalPotionItem extends Item {
 
             if (eligible.isEmpty()) {
                 serverPlayer.sendSystemMessage(
-                        Component.literal("You already have every Eternal effect.")
+                        Component.translatable("eternal-potions.drink.no_effects_left")
                                 .withStyle(ChatFormatting.RED)
                 );
                 return stack;
@@ -89,31 +81,27 @@ public class EternalPotionItem extends Item {
             MobEffectInstance existingChosen = serverPlayer.getEffect(chosen);
             int newAmplifier = existingChosen == null ? 0 : existingChosen.getAmplifier() + 1;
 
-            serverPlayer.addEffect(new MobEffectInstance(chosen, MobEffectInstance.INFINITE_DURATION, newAmplifier));
+            serverPlayer.addEffect(EternalPotions.eternalInstance(chosen, newAmplifier));
 
             String levelText = newAmplifier == 0 ? "I" : (newAmplifier == 1 ? "II" : "III");
-            String prettyName = getEffectDisplayName(chosen);
+            Component prettyName = EternalPotions.effectName(chosen);
 
             if (newAmplifier == 2) {
                 String effectId = chosen.value().getDescriptionId();
                 state.crownKing(effectId, serverPlayer.getUUID(), serverPlayer.getName().getString());
 
                 serverLevel.getServer().getPlayerList().broadcastSystemMessage(
-                        Component.literal("")
-                                .append(serverPlayer.getName())
-                                .append(Component.literal(" has been crowned the King of " + prettyName + "!"))
+                        Component.translatable("eternal-potions.king.crowned",
+                                        serverPlayer.getName(), prettyName)
                                 .withStyle(ChatFormatting.GOLD),
                         false
                 );
 
-                // Fire the all-four-thrones check.
                 EternalPotions.checkThrones(serverLevel.getServer(), state);
             }
 
             serverPlayer.sendSystemMessage(
-                    Component.literal("You got: ")
-                            .append(Component.literal(prettyName))
-                            .append(Component.literal(" " + levelText))
+                    Component.translatable("eternal-potions.drink.you_got", prettyName, levelText)
                             .withStyle(ChatFormatting.GOLD)
             );
 
@@ -136,9 +124,12 @@ public class EternalPotionItem extends Item {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display,
                                 Consumer<Component> textConsumer, TooltipFlag flag) {
-        textConsumer.accept(Component.literal("Effect: ???").withStyle(ChatFormatting.GRAY));
-        textConsumer.accept(Component.literal("Right-click to reveal").withStyle(ChatFormatting.DARK_GRAY));
+        textConsumer.accept(Component.translatable("eternal-potions.tooltip.effect_unknown")
+                .withStyle(ChatFormatting.GRAY));
+        textConsumer.accept(Component.translatable("eternal-potions.tooltip.reveal_hint")
+                .withStyle(ChatFormatting.DARK_GRAY));
     }
 }

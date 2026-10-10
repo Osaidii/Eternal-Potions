@@ -19,7 +19,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import osaidii.eternalpotions.BrewWaypoints;
 import osaidii.eternalpotions.BrewingStandAccess;
 import osaidii.eternalpotions.item.ModItems;
 
@@ -35,7 +34,6 @@ public class BrewingStandMixin implements BrewingStandAccess {
         return this.brewTime;
     }
 
-    /** True only while the Eternal Shard is actively being consumed. */
     private boolean eternalPotions$isEternalBrew() {
         ItemStack ingredient = this.items.get(3);
         return ingredient != null && !ingredient.isEmpty()
@@ -56,8 +54,6 @@ public class BrewingStandMixin implements BrewingStandAccess {
             int elapsed = self.totalBrewTime - self.brewTime;
             self.totalBrewTime = 12000;
             self.brewTime = 12000 - Math.max(0, elapsed);
-
-            BrewWaypoints.startBrew(level, pos);
 
             Component msg = Component.translatable("eternal-potions.brew.started",
                             pos.getX(), pos.getY(), pos.getZ())
@@ -117,9 +113,6 @@ class BrewingStandMenuMixin {
         Slot slot = menu.slots.get(slotId);
         if (!(slot.container instanceof BrewingStandBlockEntity stand)) return;
 
-        // Same rule as eternalPotions$isEternalBrew(): shard present AND brewTime > 0.
-        // When brewing ends, brewTime is 0 and the lock releases even if leftover
-        // shards remain in slot 3.
         if (!(stand instanceof BrewingStandAccess access)) return;
         if (access.eternalPotions$getBrewTime() <= 0) return;
 

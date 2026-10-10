@@ -5,7 +5,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -103,8 +102,6 @@ public class EternalPotions implements ModInitializer {
 			output.accept(ModItems.ETERNAL_POTION);
 		});
 
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> BrewWaypoints.clear(server));
-
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			ServerPlayer player = handler.getPlayer();
 			EternalState state = getState(server);
@@ -157,7 +154,7 @@ public class EternalPotions implements ModInitializer {
 				player.removeEffect(effect);
 			}
 
-			if (hadEternalEffect && player.getRandom().nextFloat() < 0.5f) {
+			if (hadEternalEffect) {
 				ItemStack shardStack = new ItemStack(ModItems.ETERNAL_SHARD);
 				ItemEntity drop = new ItemEntity(
 						level,
@@ -201,7 +198,6 @@ public class EternalPotions implements ModInitializer {
 					checkThrones(server, state);
 					broadcastKings(server);
 				}
-				BrewWaypoints.tick(server);
 
 				broadcastKings(server);
 			}
@@ -400,7 +396,6 @@ public class EternalPotions implements ModInitializer {
 												}
 
 												closeMenusViewing(level.getServer(), pos);
-												BrewWaypoints.stopBrew(level, pos);
 												level.destroyBlock(pos, true);
 
 												level.getServer().getPlayerList().broadcastSystemMessage(

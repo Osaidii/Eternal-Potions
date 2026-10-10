@@ -2,7 +2,6 @@ package osaidii.eternalpotions.client;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -14,11 +13,11 @@ public class EternalPotionTooltip implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
+            if (!ServerModCheck.serverHasMod()) return;
+
             if (stack.getItem() == ModItems.ETERNAL_POTION) {
-                // Replace the first line (the item name) with a rainbow version
                 if (!lines.isEmpty()) {
-                    MutableComponent rainbow = rainbowText("The Eternal Potion");
-                    lines.set(0, rainbow);
+                    lines.set(0, rainbowText("The Eternal Potion"));
                 }
             }
         });
@@ -29,7 +28,6 @@ public class EternalPotionTooltip implements ClientModInitializer {
         int len = text.length();
 
         for (int i = 0; i < len; i++) {
-            // Hue cycles across the string
             float hue = (float) i / len;
             int rgb = java.awt.Color.HSBtoRGB(hue, 1.0f, 1.0f);
 

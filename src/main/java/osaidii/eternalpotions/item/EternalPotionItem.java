@@ -42,18 +42,6 @@ public class EternalPotionItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        // Play drink sound at the start of the animation, like a vanilla potion.
-        level.playSound(
-                null,
-                player.getX(),
-                player.getY(),
-                player.getZ(),
-                SoundEvents.GENERIC_DRINK,
-                SoundSource.PLAYERS,
-                0.5F,
-                0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
-        );
-
         player.startUsingItem(hand);
         return InteractionResult.CONSUME;
     }
@@ -123,6 +111,19 @@ public class EternalPotionItem extends Item {
             if (!serverPlayer.hasInfiniteMaterials()) {
                 stack.shrink(1);
             }
+        }
+
+        if (!level.isClientSide()) {
+            level.playSound(
+                    null,
+                    livingEntity.getX(),
+                    livingEntity.getY(),
+                    livingEntity.getZ(),
+                    SoundEvents.GENERIC_DRINK,
+                    SoundSource.PLAYERS,
+                    0.5F,
+                    level.getRandom().nextFloat() * 0.1F + 0.9F
+            );
         }
 
         return stack;

@@ -11,7 +11,7 @@ public final class ServerModCheck {
      * Use for singleplayer testing or on servers without the mod.
      * Set to false before shipping.
      */
-    public static final boolean FORCE_ENABLE = true;
+    public static final boolean FORCE_ENABLE = false;
 
     private static volatile boolean serverHasMod = false;
 

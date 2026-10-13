@@ -5,8 +5,10 @@
 	"mixins": [
 		"BrewingStandMixin",
 		"BrewingStandMenuMixin",
+		"CraftingBlockMixin",
 		"EternalResistanceMixin",
 		"MilkPreserveMixin",
+		"RecipeHideMixin",
 		"TotemSaveMixin",
 		"VanillaEffectBlockMixin"
 	],

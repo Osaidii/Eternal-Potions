@@ -1,9 +1,10 @@
-# eternal-potions
+# Eternal Potions
 
-## Setup
+[![Minecraft](https://img.shields.io/badge/Minecraft-26.3-blue)](https://minecraft.net)
+[![Fabric](https://img.shields.io/badge/Fabric-0.19.5-orange)](https://fabricmc.net)
+[![Java](https://img.shields.io/badge/Java-25-red)](https://adoptium.net)
+[![License](https://img.shields.io/badge/License-CC0-lightgrey)](LICENSE)
 
-For setup instructions, please see the [Fabric Documentation page](https://docs.fabricmc.net/develop/getting-started/creating-a-project#setting-up) related to the IDE that you are using.
+A Fabric server mod for Minecraft 26.3 adding a permanent-buff potion item and a four-throne King system for PvP servers.
 
-## License
-
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+---

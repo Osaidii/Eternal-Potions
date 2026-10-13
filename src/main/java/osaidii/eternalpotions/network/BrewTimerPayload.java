@@ -1,0 +1,45 @@
+package osaidii.eternalpotions.network;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import osaidii.eternalpotions.EternalPotions;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public record BrewTimerPayload(List<Entry> entries) implements CustomPacketPayload {
+
+    public static final Type<BrewTimerPayload> TYPE =
+            new Type<>(Identifier.fromNamespaceAndPath(EternalPotions.MOD_ID, "brew_timers"));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, BrewTimerPayload> STREAM_CODEC =
+            StreamCodec.of(
+                    (buf, payload) -> {
+                        buf.writeVarInt(payload.entries().size());
+                        for (Entry e : payload.entries()) {
+                            buf.writeBlockPos(e.pos());
+                            buf.writeVarInt(e.ticksLeft());
+                        }
+                    },
+                    buf -> {
+                        int n = buf.readVarInt();
+                        List<Entry> list = new ArrayList<>(n);
+                        for (int i = 0; i < n; i++) {
+                            BlockPos p = buf.readBlockPos();
+                            int t = buf.readVarInt();
+                            list.add(new Entry(p, t));
+                        }
+                        return new BrewTimerPayload(list);
+                    }
+            );
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
+    public record Entry(BlockPos pos, int ticksLeft) {}
+}

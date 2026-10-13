@@ -11,6 +11,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import osaidii.eternalpotions.BrewWaypoints;
 import osaidii.eternalpotions.BrewingStandAccess;
 import osaidii.eternalpotions.item.ModItems;
 
@@ -41,13 +43,29 @@ public class BrewingStandMixin implements BrewingStandAccess {
                 && this.brewTime > 0;
     }
 
+    private boolean eternalPotions$hasValidPotion() {
+        for (int i = 0; i < 3; i++) {
+            ItemStack s = this.items.get(i);
+            if (!s.isEmpty() && s.getItem() instanceof PotionItem) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Inject(method = "serverTick", at = @At("TAIL"))
     private static void eternalPotions$serverTick(
             ServerLevel level, BlockPos pos, BlockState state,
             BrewingStandBlockEntity entity, CallbackInfo ci) {
         BrewingStandMixin self = (BrewingStandMixin)(Object) entity;
 
-        if (!self.eternalPotions$isEternalBrew()) return;
+        if (!self.eternalPotions$isEternalBrew()) {
+            BrewWaypoints.stopBrew(level, pos);
+            return;
+        }
+
+        BrewWaypoints.startBrew(level, pos);
+        BrewWaypoints.touch(level, pos, self.brewTime);
 
         boolean firstEternalTick = self.totalBrewTime != 12000;
         if (firstEternalTick) {
@@ -95,6 +113,13 @@ public class BrewingStandMixin implements BrewingStandAccess {
     private void eternalPotions$lockPlacement(int slot, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         if (this.eternalPotions$isEternalBrew()) {
             cir.setReturnValue(false);
+            return;
+        }
+
+        if (slot == 3 && stack.is(ModItems.ETERNAL_SHARD)) {
+            if (!this.eternalPotions$hasValidPotion()) {
+                cir.setReturnValue(false);
+            }
         }
     }
 }

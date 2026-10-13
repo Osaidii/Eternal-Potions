@@ -265,6 +265,10 @@ public class EternalPotions implements ModInitializer {
 			int tickCounter = server.getTickCount();
 			EternalState state = getState(server);
 
+			for (ServerLevel lvl : server.getAllLevels()) {
+				BrewWaypoints.tick(lvl);
+			}
+
 			if (!WELCOME_QUEUES.isEmpty()) {
 				Iterator<Map.Entry<UUID, WelcomeQueue>> it = WELCOME_QUEUES.entrySet().iterator();
 				while (it.hasNext()) {
@@ -527,6 +531,7 @@ public class EternalPotions implements ModInitializer {
 												}
 
 												closeMenusViewing(level.getServer(), pos);
+												BrewWaypoints.stopBrew(level, pos);
 												level.destroyBlock(pos, true);
 
 												level.getServer().getPlayerList().broadcastSystemMessage(

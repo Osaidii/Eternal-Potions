@@ -3,7 +3,7 @@
 [![Minecraft](https://img.shields.io/badge/Minecraft-26.3-blue)](https://minecraft.net)
 [![Fabric](https://img.shields.io/badge/Fabric-0.19.5-orange)](https://fabricmc.net)
 [![Java](https://img.shields.io/badge/Java-25-red)](https://adoptium.net)
-[![License](https://img.shields.io/badge/License-CC0-lightgrey)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
 A Fabric mod for Minecraft 26.3 that adds a permanent-buff potion and a four-throne King system for PvP servers.
 
@@ -30,6 +30,7 @@ Join our Minecraft SMP's Discord Server that uses this mod:
 - [Tips & Strategy](#tips--strategy)
 - [FAQ](#faq)
 - [Development or Contributing](#development-or-contributing)
+- [Disclosure](#discosure)
 - [License](#license)
 
 ---
@@ -257,6 +258,13 @@ https://github.com/Osaidii/Eternal-Potions/blob/main/DEVELOPMENT.md
 
 ---
 
+## Disclosure
+
+The Code for this mod was written by AI under heavy supervision by humans. The design was totally human made.
+
+---
+
 ## License
 
-CC0 — public domain. See `LICENSE` for the full text.
+Apache License 2.0 — Open Source. See `LICENSE` for the full text.
+

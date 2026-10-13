@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.minecraft.client.particle.EndRodParticle;
 import osaidii.eternalpotions.EternalPotions;
+import osaidii.eternalpotions.network.EternalNetworking;
 import osaidii.eternalpotions.network.KingsDataPayload;
 
 import java.util.List;
@@ -25,6 +26,8 @@ public class EternalPotionsClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		EternalNetworking.registerClientConfigReceiver();
+
 		ParticleProviderRegistry.getInstance().register(
 				EternalPotions.CROWN_PARTICLE, EndRodParticle.Provider::new);
 		ParticleProviderRegistry.getInstance().register(

@@ -7,6 +7,8 @@ import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
@@ -20,7 +22,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -40,8 +47,10 @@ import org.slf4j.LoggerFactory;
 import osaidii.eternalpotions.effect.EternalEffects;
 import osaidii.eternalpotions.item.ModItems;
 import osaidii.eternalpotions.network.EternalNetworking;
+import osaidii.eternalpotions.network.EternalNetworking.ConfigPresencePayload;
 import osaidii.eternalpotions.network.KingsDataPayload;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -100,6 +109,26 @@ public class EternalPotions implements ModInitializer {
 
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(output -> {
 			output.accept(ModItems.ETERNAL_POTION);
+		});
+
+		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register((handler, server) -> {
+			if (!ServerConfigurationNetworking.canSend(handler, ConfigPresencePayload.TYPE)) {
+				MutableComponent link = Component.literal("https://modrinth.com/mod/eternal-potions")
+						.withStyle(Style.EMPTY
+								.withColor(TextColor.fromRgb(0x2D9BF0))
+								.withUnderlined(true)
+								.withClickEvent(new ClickEvent.OpenUrl(
+										URI.create("https://modrinth.com/mod/eternal-potions")))
+								.withHoverEvent(new HoverEvent.ShowText(
+										Component.literal("Click to open in your browser"))));
+
+				MutableComponent message = Component.literal(
+								"This server requires the Eternal Potions mod.\n" +
+										"Please download it here: ")
+						.append(link);
+
+				handler.disconnect(message);
+			}
 		});
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {

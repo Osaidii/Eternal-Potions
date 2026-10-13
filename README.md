@@ -22,6 +22,7 @@ Join our Minecraft SMP's Discord Server that uses this mod:
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 - [The Four Effects](#the-four-effects)
+- [Vanilla Effects Are Nerfed](#vanilla-effects-are-nerfed)
 - [The King System](#the-king-system)
 - [Commands](#commands)
 - [Recipes](#recipes)
@@ -30,7 +31,7 @@ Join our Minecraft SMP's Discord Server that uses this mod:
 - [Tips & Strategy](#tips--strategy)
 - [FAQ](#faq)
 - [Development or Contributing](#development-or-contributing)
-- [Disclosure](#discosure)
+- [Disclosure](#disclosure)
 - [License](#license)
 
 ---
@@ -71,18 +72,33 @@ Your effects are permanent. They stay with you through death, respawn, milk, and
 
 ## The Four Effects
 
-Each effect has three levels. Levels stack with each other.
+Each effect has three levels. Higher levels **replace** lower ones — they don't stack.
 
 | Effect | Level I | Level II | Level III (King) |
 |---|---|---|---|
-| **Eternal Speed** | +30% movement speed | +60% movement speed | +90% movement speed |
-| **Eternal Strength** | +4.5 attack damage | +9 attack damage | +13.5 attack damage |
-| **Eternal Regeneration** | Heal 1 HP every 33 ticks | Heal 1 HP every 16 ticks | Heal 1 HP every 11 ticks |
-| **Eternal Resistance** | 30% damage reduction | 60% damage reduction | 80% damage reduction |
+| **Eternal Speed** | +15% movement speed | +25% movement speed | +40% movement speed |
+| **Eternal Strength** | +3 attack damage | +6 attack damage | +9 attack damage |
+| **Eternal Regeneration** | Heal 1 HP every 50 ticks | Heal 1 HP every 25 ticks | Heal 1 HP every 12 ticks |
+| **Eternal Resistance** | 20% damage reduction | 40% damage reduction | 60% damage reduction |
 
 All four effects are **permanent** once acquired.
 
 **Vanilla versions of these effects are blocked** while you have the Eternal equivalent. You cannot stack vanilla Speed with Eternal Speed, for example — the mod silently cancels the vanilla effect and tells you why.
+
+---
+
+## Vanilla Effects Are Nerfed
+
+To make Eternal Potions feel worth grinding for, the vanilla versions of Speed, Strength, Regeneration, and Resistance have been **cut roughly in half** while this mod is loaded.
+
+| Vanilla Effect | Normal Value | Nerfed Value |
+|---|---|---|
+| **Speed** | +20% per level | +10% per level |
+| **Strength** | +3 damage per level | +1.5 damage per level |
+| **Regeneration** | Heal every 50 / 25 / 12 ticks | Heal every 100 / 50 / 25 ticks |
+| **Resistance** | 20% per level | 10% per level |
+
+Eternal Potions still give their **full, un-nerfed** values. An Eternal Potion is therefore roughly **2× stronger** than the equivalent vanilla potion — and it never runs out.
 
 ---
 
@@ -214,11 +230,12 @@ Vanilla Speed, Regeneration, Resistance, and Strength are **blocked** while you 
 ## Tips & Strategy
 
 - **Prioritize one effect.** Reaching Level III of a single effect is faster than spreading yourself thin, and it makes you a King.
-- **The resistance King is very hard to kill.** 80% damage reduction on top of armor makes you extremely tanky. Target them first in PvP.
-- **The strength King is a burst threat.** +13.5 attack damage is more than a diamond sword's base damage. Do not melee them without a plan.
+- **The resistance King is very hard to kill.** 60% damage reduction on top of armor makes you extremely tanky. Target them first in PvP.
+- **The strength King is a burst threat.** +9 attack damage is more than a diamond sword's base damage. Do not melee them without a plan.
 - **Losing your throne on death is brutal.** A King who dies in a fight loses the throne and drops a shard — the winner can pick it up and brew more.
 - **Shards are farmable.** Kill a player who has any Eternal effect and they drop a shard 100% of the time. This makes PvP profitable.
 - **Stay near a brewing stand.** The 10-minute brew locks the stand and announces its position. Enemies will find it. Brew in a secure location.
+- **Vanilla potions are half as strong.** If you're relying on vanilla Speed, Strength, Regen, or Resistance, you're at a disadvantage. Get an Eternal Potion.
 
 ---
 
@@ -248,6 +265,9 @@ A: No. The brew only progresses while the chunk containing the brewing stand is 
 **Q: Will the mod work with other mods?**
 A: It should work with most. If another mod adds effects with the same names or blocks the same vanilla effects, conflicts are possible.
 
+**Q: Why are vanilla potions weaker now?**
+A: To make Eternal Potions feel rewarding. Vanilla Speed, Strength, Regeneration, and Resistance are each cut to roughly half their normal values while this mod is installed.
+
 ---
 
 ## Development or Contributing
@@ -267,4 +287,3 @@ The Code for this mod was written by AI under heavy supervision by humans. The d
 ## License
 
 Apache License 2.0 — Open Source. See `LICENSE` for the full text.
-

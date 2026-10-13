@@ -14,15 +14,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import osaidii.eternalpotions.EternalPotions;
 
-/**
- * Custom Eternal effects \u2014 1.5x the strength of their vanilla counterparts.
- *
- *   Vanilla Speed      = +20% per level   ->  Eternal Speed      = +30% per level
- *   Vanilla Strength   = +3 dmg per level ->  Eternal Strength   = +4.5 dmg per level
- *   Vanilla Regen      = 1 HP / 50t/lvl   ->  Eternal Regen      = 1 HP / 33t/lvl
- *   Vanilla Resistance = -20% per level   ->  Eternal Resistance = -30% per level
- *     (Resistance is applied via EternalResistanceMixin, not an attribute.)
- */
 public final class EternalEffects {
 
     public static final Holder<MobEffect> ETERNAL_SPEED = register("eternal_speed", new EternalSpeedEffect());
@@ -41,12 +32,11 @@ public final class EternalEffects {
         return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect);
     }
 
-    // -----------------------------------------------------------------
-    //  Speed: +30% per level (vanilla is +20%)
-    // -----------------------------------------------------------------
     public static class EternalSpeedEffect extends MobEffect {
         private static final Identifier MODIFIER_ID =
                 Identifier.fromNamespaceAndPath(EternalPotions.MOD_ID, "eternal_speed");
+
+        private static final double[] SPEED_BY_LEVEL = { 0.15D, 0.25D, 0.40D };
 
         public EternalSpeedEffect() {
             super(MobEffectCategory.BENEFICIAL, 0x7CAFC6);
@@ -62,9 +52,11 @@ public final class EternalEffects {
                 instance.removeModifier(existing);
             }
 
+            int index = Math.min(amplifier, SPEED_BY_LEVEL.length - 1);
+
             AttributeModifier modifier = new AttributeModifier(
                     MODIFIER_ID,
-                    0.30D * (amplifier + 1),
+                    SPEED_BY_LEVEL[index],
                     AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
             );
             instance.addTransientModifier(modifier);
@@ -81,9 +73,6 @@ public final class EternalEffects {
         }
     }
 
-    // -----------------------------------------------------------------
-    //  Strength: +4.5 damage per level (vanilla is +3)
-    // -----------------------------------------------------------------
     public static class EternalStrengthEffect extends MobEffect {
         private static final Identifier MODIFIER_ID =
                 Identifier.fromNamespaceAndPath(EternalPotions.MOD_ID, "eternal_strength");
@@ -121,9 +110,6 @@ public final class EternalEffects {
         }
     }
 
-    // -----------------------------------------------------------------
-    //  Regeneration: heals 1 HP every (33 / level) ticks (vanilla is 50 / level).
-    // -----------------------------------------------------------------
     public static class EternalRegenerationEffect extends MobEffect {
         public EternalRegenerationEffect() {
             super(MobEffectCategory.BENEFICIAL, 0xCD5CAB);
@@ -139,9 +125,6 @@ public final class EternalEffects {
         }
     }
 
-    // -----------------------------------------------------------------
-    //  Resistance: no attribute. Damage reduction applied by EternalResistanceMixin.
-    // -----------------------------------------------------------------
     public static class EternalResistanceEffect extends MobEffect {
         public EternalResistanceEffect() {
             super(MobEffectCategory.BENEFICIAL, 0x9146D5);

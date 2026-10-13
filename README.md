@@ -140,9 +140,9 @@ All `/eternal` commands require **OP** (permission level 2).
 
 ### Eternal Shard (Crafting Table)
 
-[ O ][ H ][ O ]
-[ E ][ K ][ S ]
-[ O ][ T ][ O ]
+[ O ][ H ][ O ]  
+[ E ][ K ][ S ]  
+[ O ][ T ][ O ]  
 
 
 - **O** = Ominous Trial Key

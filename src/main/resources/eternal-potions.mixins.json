@@ -8,7 +8,8 @@
 		"EternalResistanceMixin",
 		"MilkPreserveMixin",
 		"TotemSaveMixin",
-		"VanillaEffectBlockMixin"
+		"VanillaEffectBlockMixin",
+		"VanillaEffectNerfMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -36,6 +36,7 @@ public final class EternalEffects {
         private static final Identifier MODIFIER_ID =
                 Identifier.fromNamespaceAndPath(EternalPotions.MOD_ID, "eternal_speed");
 
+        // Custom values — not vanilla. Kept lower than vanilla Speed to keep FOV sane.
         private static final double[] SPEED_BY_LEVEL = { 0.15D, 0.25D, 0.40D };
 
         public EternalSpeedEffect() {
@@ -91,9 +92,10 @@ public final class EternalEffects {
                 instance.removeModifier(existing);
             }
 
+            // Vanilla Strength: +3 damage per level.
             AttributeModifier modifier = new AttributeModifier(
                     MODIFIER_ID,
-                    4.5D * (amplifier + 1),
+                    3.0D * (amplifier + 1),
                     AttributeModifier.Operation.ADD_VALUE
             );
             instance.addTransientModifier(modifier);
@@ -117,7 +119,8 @@ public final class EternalEffects {
 
         @Override
         public boolean applyEffectTick(ServerLevel level, LivingEntity entity, int amplifier) {
-            int interval = Math.max(1, (int) (33.0 / (amplifier + 1)));
+            // Vanilla Regeneration: heals every 50 >> amplifier ticks.
+            int interval = Math.max(1, 50 >> amplifier);
             if (entity.tickCount % interval == 0 && entity.getHealth() < entity.getMaxHealth()) {
                 entity.heal(1.0F);
             }

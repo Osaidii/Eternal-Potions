@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import osaidii.eternalpotions.EternalPotions;
-import osaidii.eternalpotions.SingleplayerDetection;
 import osaidii.eternalpotions.item.ModItems;
 
 @Mixin(AbstractContainerMenu.class)

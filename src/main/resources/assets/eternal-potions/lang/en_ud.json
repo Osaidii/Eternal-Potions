@@ -1,18 +1,14 @@
 {
   "item.eternal-potions.eternal_shard": "Eternal Shard",
   "item.eternal-potions.eternal_potion": "The Eternal Potion",
-
   "effect.eternal-potions.eternal_speed": "Eternal Speed",
   "effect.eternal-potions.eternal_regeneration": "Eternal Regeneration",
   "effect.eternal-potions.eternal_resistance": "Eternal Resistance",
   "effect.eternal-potions.eternal_strength": "Eternal Strength",
-
   "eternal-potions.tooltip.effect_unknown": "Effect: ???",
   "eternal-potions.tooltip.reveal_hint": "Right-click to reveal",
-
   "eternal-potions.drink.no_effects_left": "You already have every Eternal effect.",
   "eternal-potions.drink.you_got": "You got: %s %s",
-
   "eternal-potions.king.fallen": "The King of %s (%s) has fallen. The throne is empty.",
   "eternal-potions.king.crowned": "%s has been crowned the King of %s!",
   "eternal-potions.king.crowned_self": "You are now King of %s!",
@@ -20,7 +16,6 @@
   "eternal-potions.king.throne_empty": "The throne of %s sits empty once more.",
   "eternal-potions.king.all_four_single": "%s has claimed ALL FOUR THRONES. The Eternal belongs to them.",
   "eternal-potions.king.all_four_multi": "All four thrones have been claimed.",
-
   "eternal-potions.command.unknown_effect": "Unknown effect: %s",
   "eternal-potions.command.already_king": "%s is already King of %s",
   "eternal-potions.command.king_slot_taken": "%s King slot is taken. %s stays at II.",
@@ -36,11 +31,14 @@
   "eternal-potions.command.dethroned": "Dethroned the King of %s",
   "eternal-potions.command.list_empty": "%s: empty",
   "eternal-potions.command.list_line": "%s: %s",
-
   "eternal-potions.command.stop.no_stand": "No brewing stand at %s, %s, %s",
   "eternal-potions.command.stop.not_brewing": "Brewing stand at %s, %s, %s is not brewing an Eternal Potion",
   "eternal-potions.command.stop.destroyed": "Stopped and destroyed Eternal brew at %s, %s, %s",
-
   "eternal-potions.brew.started": "[Server] A brew has begun at %s, %s, %s",
-  "eternal-potions.brew.stopped": "[Server] The Eternal brew at %s, %s, %s has been stopped and destroyed."
+  "eternal-potions.brew.stopped": "[Server] The Eternal brew at %s, %s, %s has been stopped and destroyed.",
+  "key.eternal-potions.open_kings": "Open Kings Menu",
+  "category.eternal-potions.keys": "Eternal Potions",
+  "eternal-potions.kings.title": "Kings",
+  "eternal-potions.kings.empty": "Empty",
+  "eternal-potions.effect.vanilla_blocked": "You already have %s — vanilla %s has no effect."
 }

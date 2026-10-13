@@ -8,10 +8,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.minecraft.client.particle.EndRodParticle;
-import net.minecraft.network.chat.Component;
 import osaidii.eternalpotions.EternalPotions;
 import osaidii.eternalpotions.network.KingsDataPayload;
-import osaidii.eternalpotions.network.ModPresencePayload;
 
 import java.util.List;
 
@@ -39,16 +37,9 @@ public class EternalPotionsClient implements ClientModInitializer {
 				(payload, context) -> LAST_KINGS = payload.kings()
 		);
 
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-			boolean hasMod = ClientPlayNetworking.canSend(ModPresencePayload.TYPE);
-			ServerModCheck.set(hasMod);
-			EternalPotions.LOGGER.info("[EternalPotion] server has mod: {}", hasMod);
-		});
-
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
 			LAST_KINGS = List.of();
 			pendingOpenTicks = -1;
-			ServerModCheck.set(false);
 		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -70,14 +61,6 @@ public class EternalPotionsClient implements ClientModInitializer {
 			dispatcher.register(
 					ClientCommands.literal("kings")
 							.executes(ctx -> {
-								if (!ServerModCheck.serverHasMod()) {
-									if (ctx.getSource().getPlayer() != null) {
-										ctx.getSource().getPlayer().sendSystemMessage(
-												Component.literal("Eternal Potions is not installed on this server.")
-										);
-									}
-									return 0;
-								}
 								pendingOpenTicks = 2;
 								return 1;
 							})

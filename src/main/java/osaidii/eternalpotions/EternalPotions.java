@@ -50,21 +50,6 @@ public class EternalPotions implements ModInitializer {
 	public static final String MOD_ID = "eternal-potions";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	/**
-	 * MASTER DEBUG TOGGLE.
-	 *
-	 * false = normal behavior:
-	 *   - Items hidden from creative tabs in singleplayer.
-	 *   - Kings menu only works when the connected server has the mod.
-	 *   - Server-only gate active.
-	 *
-	 * true = everything on, everywhere:
-	 *   - Items always visible, including singleplayer.
-	 *   - Kings menu works on any server, modded or not.
-	 *   - No gating.
-	 */
-	public static final boolean EVERYTHING_EVERYWHERE = false;
-
 	public static final SimpleParticleType CROWN_PARTICLE = FabricParticleTypes.simple();
 	public static final SimpleParticleType ETERNAL_LEVEL1_PARTICLE = FabricParticleTypes.simple();
 	public static final SimpleParticleType ETERNAL_LEVEL2_PARTICLE = FabricParticleTypes.simple();
@@ -95,8 +80,6 @@ public class EternalPotions implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		SingleplayerDetection.register();
-
 		EternalEffects.initialize();
 		ModItems.initialize();
 		EternalNetworking.register();
@@ -112,12 +95,10 @@ public class EternalPotions implements ModInitializer {
 				ETERNAL_LEVEL2_PARTICLE);
 
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.INGREDIENTS).register(output -> {
-			if (!EVERYTHING_EVERYWHERE && SingleplayerDetection.isSingleplayer()) return;
 			output.accept(ModItems.ETERNAL_SHARD);
 		});
 
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(output -> {
-			if (!EVERYTHING_EVERYWHERE && SingleplayerDetection.isSingleplayer()) return;
 			output.accept(ModItems.ETERNAL_POTION);
 		});
 

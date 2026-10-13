@@ -13,8 +13,6 @@ public class EternalPotionTooltip implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
-            if (!ServerModCheck.serverHasMod()) return;
-
             if (stack.getItem() == ModItems.ETERNAL_POTION) {
                 if (!lines.isEmpty()) {
                     lines.set(0, rainbowText("The Eternal Potion"));

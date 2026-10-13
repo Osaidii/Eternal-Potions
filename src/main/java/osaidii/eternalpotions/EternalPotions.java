@@ -52,7 +52,10 @@ import osaidii.eternalpotions.network.KingsDataPayload;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class EternalPotions implements ModInitializer {
@@ -69,6 +72,57 @@ public class EternalPotions implements ModInitializer {
 			EternalEffects.ETERNAL_RESISTANCE,
 			EternalEffects.ETERNAL_STRENGTH
 	);
+
+	private static final int WELCOME_DELAY_TICKS = 60;
+
+	private static final String[][] WELCOME_PAGES = {
+			{
+					"§7Welcome, §e%player%§7.",
+					"§7Where power stays — if you can keep it.",
+					"",
+					"§6§l✦ THE GOAL",
+					"§7Claim §e4 Eternal Effects§7, one for each Domain.",
+					"§7Become a §6King§7 of each, then rule §eall four§7 to win.",
+					""
+			},
+			{
+					"§5§l✦ ETERNAL BREWING",
+					"§71. Place an §dEternal Shard §7in a Brewing Stand.",
+					"§72. The stand locks for §e10 minutes§7.",
+					"§73. Your location is broadcast to the server.",
+					"§74. Survive, then take the §dEternal Potion§7.",
+					"§75. Drink it for a random Eternal Effect.",
+					"",
+					"§c§l✦ THE HUNT",
+					"§7You are vulnerable while brewing.",
+					"§7Kill a wielder to steal their Eternal Power."
+			},
+			{
+					"",
+					"§b§l✦ THE DOMAINS",
+					"§7Stack an effect up to §e3 times§7 to become its §6King§7.",
+					"§7Defend your Domain from challengers.",
+					"",
+					"§6§l✦ VICTORY",
+					"§7Rule §eall 4 Domains§7 to win the season.",
+					"",
+					"§8Power attracts enemies.",
+					"§8Kings attract hunters.",
+					"§8Trust carefully. Take to the Thrones"
+			}
+	};
+
+	private static final Map<UUID, WelcomeQueue> WELCOME_QUEUES = new HashMap<>();
+
+	private static class WelcomeQueue {
+		int nextPage;
+		int ticksUntilNext;
+
+		WelcomeQueue(int nextPage, int ticksUntilNext) {
+			this.nextPage = nextPage;
+			this.ticksUntilNext = ticksUntilNext;
+		}
+	}
 
 	private static boolean allThronesAnnounced = false;
 
@@ -144,6 +198,14 @@ public class EternalPotions implements ModInitializer {
 				}
 			}
 
+			if (!state.hasBeenWelcomed(player.getUUID())) {
+				state.markWelcomed(player.getUUID());
+				server.saveEverything(false, false, true);
+				sendWelcomePage(player, 0);
+				WELCOME_QUEUES.put(player.getUUID(),
+						new WelcomeQueue(1, WELCOME_DELAY_TICKS));
+			}
+
 			broadcastKings(server);
 		});
 
@@ -203,6 +265,33 @@ public class EternalPotions implements ModInitializer {
 			int tickCounter = server.getTickCount();
 			EternalState state = getState(server);
 
+			if (!WELCOME_QUEUES.isEmpty()) {
+				Iterator<Map.Entry<UUID, WelcomeQueue>> it = WELCOME_QUEUES.entrySet().iterator();
+				while (it.hasNext()) {
+					Map.Entry<UUID, WelcomeQueue> entry = it.next();
+					UUID uuid = entry.getKey();
+					WelcomeQueue q = entry.getValue();
+
+					ServerPlayer player = server.getPlayerList().getPlayer(uuid);
+					if (player == null) {
+						it.remove();
+						continue;
+					}
+
+					q.ticksUntilNext--;
+					if (q.ticksUntilNext > 0) continue;
+
+					if (q.nextPage >= WELCOME_PAGES.length) {
+						it.remove();
+						continue;
+					}
+
+					sendWelcomePage(player, q.nextPage);
+					q.nextPage++;
+					q.ticksUntilNext = WELCOME_DELAY_TICKS;
+				}
+			}
+
 			if (tickCounter % 20 == 0) {
 				for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 					SimpleParticleType particle = selectParticle(player, state);
@@ -253,6 +342,19 @@ public class EternalPotions implements ModInitializer {
 		registerCommands();
 
 		LOGGER.info("Eternal Potions loaded");
+	}
+
+	private static void sendWelcomePage(ServerPlayer player, int pageIndex) {
+		if (pageIndex < 0 || pageIndex >= WELCOME_PAGES.length) return;
+		String playerName = player.getName().getString();
+		for (String line : WELCOME_PAGES[pageIndex]) {
+			String resolved = line.replace("%player%", playerName);
+			if (resolved.isEmpty()) {
+				player.sendSystemMessage(Component.literal(" "));
+			} else {
+				player.sendSystemMessage(Component.literal(resolved));
+			}
+		}
 	}
 
 	public static void broadcastKings(MinecraftServer server) {

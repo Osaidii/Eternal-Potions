@@ -16,20 +16,28 @@ public class EternalState extends SavedData {
     public final Map<String, UUID> kings;
     public final Map<String, String> kingNames;
     public final Map<String, List<String>> pendingRespawns;
+    public final List<String> welcomedPlayers;
+    public boolean allThronesAnnounced;
 
     public EternalState() {
         this.kings = new HashMap<>();
         this.kingNames = new HashMap<>();
         this.pendingRespawns = new HashMap<>();
+        this.welcomedPlayers = new ArrayList<>();
+        this.allThronesAnnounced = false;
     }
 
     public EternalState(Map<String, UUID> kings,
                         Map<String, String> kingNames,
-                        Map<String, List<String>> pendingRespawns) {
+                        Map<String, List<String>> pendingRespawns,
+                        List<String> welcomedPlayers,
+                        boolean allThronesAnnounced) {
         this.kings = new HashMap<>(kings);
         this.kingNames = new HashMap<>(kingNames);
         this.pendingRespawns = new HashMap<>();
         pendingRespawns.forEach((k, v) -> this.pendingRespawns.put(k, new ArrayList<>(v)));
+        this.welcomedPlayers = new ArrayList<>(welcomedPlayers);
+        this.allThronesAnnounced = allThronesAnnounced;
     }
 
     public static final Codec<EternalState> CODEC = RecordCodecBuilder.create(instance ->
@@ -42,7 +50,12 @@ public class EternalState extends SavedData {
                             .forGetter(state -> state.kingNames),
                     Codec.unboundedMap(Codec.STRING, Codec.STRING.listOf())
                             .optionalFieldOf("pendingRespawns", Map.of())
-                            .forGetter(state -> state.pendingRespawns)
+                            .forGetter(state -> state.pendingRespawns),
+                    Codec.STRING.listOf()
+                            .optionalFieldOf("welcomedPlayers", List.of())
+                            .forGetter(state -> state.welcomedPlayers),
+                    Codec.BOOL.optionalFieldOf("allThronesAnnounced", false)
+                            .forGetter(state -> state.allThronesAnnounced)
             ).apply(instance, EternalState::new)
     );
 
@@ -70,7 +83,6 @@ public class EternalState extends SavedData {
         setDirty();
     }
 
-    /** Refreshes the stored name if it changed. No-op if unchanged or slot empty. */
     public void updateKingName(String effectId, String newName) {
         if (!kingNames.containsKey(effectId)) return;
         if (newName.equals(kingNames.get(effectId))) return;
@@ -87,5 +99,23 @@ public class EternalState extends SavedData {
         List<String> result = pendingRespawns.remove(uuid.toString());
         if (result != null) setDirty();
         return result;
+    }
+
+    public void setAllThronesAnnounced(boolean value) {
+        if (this.allThronesAnnounced == value) return;
+        this.allThronesAnnounced = value;
+        setDirty();
+    }
+
+    public boolean hasBeenWelcomed(UUID uuid) {
+        return welcomedPlayers.contains(uuid.toString());
+    }
+
+    public void markWelcomed(UUID uuid) {
+        String id = uuid.toString();
+        if (!welcomedPlayers.contains(id)) {
+            welcomedPlayers.add(id);
+            setDirty();
+        }
     }
 }

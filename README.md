@@ -216,9 +216,6 @@ Vanilla Speed, Regeneration, Resistance, and Strength are **blocked** while you 
 
 ## FAQ
 
-**Q: Can a vanilla client join a modded server?**
-A: Yes, but they won't see custom HUD elements, particles, or the `/kings` menu. Effects work server-side regardless.
-
 **Q: Will my effects disappear if I drink milk?**
 A: No. Milk is specifically protected against removing Eternal effects.
 

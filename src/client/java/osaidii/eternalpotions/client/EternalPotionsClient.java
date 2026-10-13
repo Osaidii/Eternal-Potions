@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.minecraft.client.particle.EndRodParticle;
 import osaidii.eternalpotions.EternalPotions;
+import osaidii.eternalpotions.network.BrewTimerPayload;
 import osaidii.eternalpotions.network.EternalNetworking;
 import osaidii.eternalpotions.network.KingsDataPayload;
 
@@ -40,8 +41,14 @@ public class EternalPotionsClient implements ClientModInitializer {
 				(payload, context) -> LAST_KINGS = payload.kings()
 		);
 
+		ClientPlayNetworking.registerGlobalReceiver(
+				BrewTimerPayload.TYPE,
+				(payload, context) -> BrewTimerClientCache.update(payload.entries())
+		);
+
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
 			LAST_KINGS = List.of();
+			BrewTimerClientCache.clear();
 			pendingOpenTicks = -1;
 		});
 

@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import osaidii.eternalpotions.effect.EternalEffects;
 import osaidii.eternalpotions.item.ModItems;
+import osaidii.eternalpotions.network.BrewTimerPayload;
 import osaidii.eternalpotions.network.EternalNetworking;
 import osaidii.eternalpotions.network.EternalNetworking.ConfigPresencePayload;
 import osaidii.eternalpotions.network.KingsDataPayload;
@@ -207,6 +208,7 @@ public class EternalPotions implements ModInitializer {
 			}
 
 			broadcastKings(server);
+			broadcastBrewTimers(server);
 		});
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
@@ -322,6 +324,7 @@ public class EternalPotions implements ModInitializer {
 				}
 
 				broadcastKings(server);
+				broadcastBrewTimers(server);
 			}
 		});
 
@@ -358,6 +361,22 @@ public class EternalPotions implements ModInitializer {
 			} else {
 				player.sendSystemMessage(Component.literal(resolved));
 			}
+		}
+	}
+
+	private static void broadcastBrewTimers(MinecraftServer server) {
+		List<BrewTimerPayload.Entry> entries = new ArrayList<>();
+		for (BrewWaypointTransmitter t : BrewWaypoints.getAllTransmitters()) {
+			BrewWaypoints.Brew b = BrewWaypoints.getBrew(t.getPos());
+			if (b != null) {
+				entries.add(new BrewTimerPayload.Entry(t.getId(), b.ticksLeft));
+			}
+		}
+		if (entries.isEmpty()) return;
+
+		BrewTimerPayload payload = new BrewTimerPayload(entries);
+		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			ServerPlayNetworking.send(player, payload);
 		}
 	}
 

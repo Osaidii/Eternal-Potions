@@ -22,13 +22,18 @@ public final class EternalNetworking {
                 KingsDataPayload.TYPE,
                 KingsDataPayload.STREAM_CODEC
         );
+
+        PayloadTypeRegistry.clientboundPlay().register(
+                BrewTimerPayload.TYPE,
+                BrewTimerPayload.STREAM_CODEC
+        );
     }
 
     public static void registerClientConfigReceiver() {
         ClientConfigurationNetworking.registerGlobalReceiver(
                 ConfigPresencePayload.TYPE,
                 (payload, context) -> {
-                    // No-op. Receiver existing is the signal.
+                    // No-op.
                 }
         );
     }

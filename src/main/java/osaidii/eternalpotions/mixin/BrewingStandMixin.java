@@ -64,8 +64,8 @@ public class BrewingStandMixin implements BrewingStandAccess {
             return;
         }
 
-        BrewWaypoints.startBrew(level, pos);
         BrewWaypoints.touch(level, pos, self.brewTime);
+        BrewWaypoints.startBrew(level, pos);
 
         boolean firstEternalTick = self.totalBrewTime != 12000;
         if (firstEternalTick) {

@@ -1,0 +1,11 @@
+{
+    "required": true,
+    "package": "osaidii.eternalpotions.mixin",
+    "compatibilityLevel": "JAVA_25",
+    "client": [
+        "LocatorBarTimerMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

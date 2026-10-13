@@ -31,8 +31,6 @@ public final class BrewWaypoints {
         GlobalPos key = GlobalPos.of(level.dimension(), pos.immutable());
         if (TRANSMITTERS.containsKey(key)) return;
 
-        EternalPotions.LOGGER.info("[BrewWaypoint] startBrew at {} dimension={}", pos, level.dimension());
-
         BrewWaypointTransmitter transmitter = new BrewWaypointTransmitter(level, pos);
         try {
             level.getWaypointManager().trackWaypoint(transmitter);
@@ -49,7 +47,6 @@ public final class BrewWaypoints {
         Brew existing = ACTIVE.get(key);
         if (existing == null) {
             ACTIVE.put(key, new Brew(pos.immutable(), ticksLeft));
-            EternalPotions.LOGGER.info("[BrewWaypoint] touch new at {} ticks={}", pos, ticksLeft);
         } else {
             existing.ticksLeft = ticksLeft;
         }
@@ -57,7 +54,7 @@ public final class BrewWaypoints {
 
     public static void stopBrew(ServerLevel level, BlockPos pos) {
         GlobalPos key = GlobalPos.of(level.dimension(), pos.immutable());
-        boolean removedActive = ACTIVE.remove(key) != null;
+        ACTIVE.remove(key);
         BrewWaypointTransmitter transmitter = TRANSMITTERS.remove(key);
         if (transmitter != null) {
             try {
@@ -66,10 +63,6 @@ public final class BrewWaypoints {
                 EternalPotions.LOGGER.error("[BrewWaypoint] untrackWaypoint FAILED", t);
             }
         }
-        if (removedActive || transmitter != null) {
-            EternalPotions.LOGGER.info("[BrewWaypoint] stopBrew at {} activeWas={} transmitterWas={}",
-                    pos, removedActive, transmitter != null);
-        }
     }
 
     public static void tick(ServerLevel level) {
@@ -77,7 +70,6 @@ public final class BrewWaypoints {
         for (Map.Entry<GlobalPos, BrewWaypointTransmitter> entry : TRANSMITTERS.entrySet()) {
             if (!entry.getKey().dimension().equals(level.dimension())) continue;
             if (!entry.getValue().isTransmittingWaypoint()) {
-                EternalPotions.LOGGER.info("[BrewWaypoint] tick untrack {}", entry.getKey().pos());
                 level.getWaypointManager().untrackWaypoint(entry.getValue());
                 toRemove.add(entry.getKey());
             }
@@ -99,6 +91,10 @@ public final class BrewWaypoints {
 
     public static Collection<Brew> getAll() {
         return ACTIVE.values();
+    }
+
+    public static Collection<BrewWaypointTransmitter> getAllTransmitters() {
+        return TRANSMITTERS.values();
     }
 
     public static Brew getBrew(BlockPos pos) {

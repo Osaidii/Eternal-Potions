@@ -1,6 +1,5 @@
 package osaidii.eternalpotions.network;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -9,6 +8,7 @@ import osaidii.eternalpotions.EternalPotions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public record BrewTimerPayload(List<Entry> entries) implements CustomPacketPayload {
 
@@ -20,7 +20,7 @@ public record BrewTimerPayload(List<Entry> entries) implements CustomPacketPaylo
                     (buf, payload) -> {
                         buf.writeVarInt(payload.entries().size());
                         for (Entry e : payload.entries()) {
-                            buf.writeBlockPos(e.pos());
+                            buf.writeUUID(e.id());
                             buf.writeVarInt(e.ticksLeft());
                         }
                     },
@@ -28,9 +28,9 @@ public record BrewTimerPayload(List<Entry> entries) implements CustomPacketPaylo
                         int n = buf.readVarInt();
                         List<Entry> list = new ArrayList<>(n);
                         for (int i = 0; i < n; i++) {
-                            BlockPos p = buf.readBlockPos();
+                            UUID id = buf.readUUID();
                             int t = buf.readVarInt();
-                            list.add(new Entry(p, t));
+                            list.add(new Entry(id, t));
                         }
                         return new BrewTimerPayload(list);
                     }
@@ -41,5 +41,5 @@ public record BrewTimerPayload(List<Entry> entries) implements CustomPacketPaylo
         return TYPE;
     }
 
-    public record Entry(BlockPos pos, int ticksLeft) {}
+    public record Entry(UUID id, int ticksLeft) {}
 }

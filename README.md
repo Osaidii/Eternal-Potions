@@ -8,6 +8,13 @@
 A Fabric mod for Minecraft 26.3 that adds a permanent-buff potion and a four-throne King system for PvP servers.
 
 ---
+## Discord
+
+Join our Minecraft SMP's Discord Server that uses this mod:  
+[https://discord.gg/FbUauw9rgT](https://discord.gg/FbUauw9rgT)
+  
+
+---
 
 ## Table of Contents
 

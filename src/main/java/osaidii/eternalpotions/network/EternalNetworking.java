@@ -2,10 +2,8 @@ package osaidii.eternalpotions.network;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.chat.Component;
 import osaidii.eternalpotions.EternalPotions;
 
 public final class EternalNetworking {
@@ -27,30 +25,33 @@ public final class EternalNetworking {
                 BrewTimerPayload.TYPE,
                 BrewTimerPayload.STREAM_CODEC
         );
+
+        PayloadTypeRegistry.serverboundPlay().register(
+                ClientVersionPayload.TYPE,
+                ClientVersionPayload.STREAM_CODEC
+        );
+
+        ServerPlayNetworking.registerGlobalReceiver(
+                ClientVersionPayload.TYPE,
+                (payload, context) -> {
+                    String serverVersion = EternalPotions.getModVersion();
+                    String clientVersion = payload.clientVersion();
+                    if (!serverVersion.equals(clientVersion)) {
+                        context.player().connection.disconnect(Component.literal(
+                                "Eternal Potions: version mismatch.\n" +
+                                        "Install version " + serverVersion + "."
+                        ));
+                    }
+                }
+        );
     }
 
     public static void registerClientConfigReceiver() {
         ClientConfigurationNetworking.registerGlobalReceiver(
                 ConfigPresencePayload.TYPE,
                 (payload, context) -> {
-                    // No-op.
+                    // No-op. Receiver existing is the signal.
                 }
         );
-    }
-
-    public record ConfigPresencePayload() implements CustomPacketPayload {
-
-        public static final ConfigPresencePayload INSTANCE = new ConfigPresencePayload();
-
-        public static final Type<ConfigPresencePayload> TYPE =
-                new Type<>(Identifier.fromNamespaceAndPath(EternalPotions.MOD_ID, "config_presence"));
-
-        public static final StreamCodec<FriendlyByteBuf, ConfigPresencePayload> STREAM_CODEC =
-                StreamCodec.unit(INSTANCE);
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
     }
 }

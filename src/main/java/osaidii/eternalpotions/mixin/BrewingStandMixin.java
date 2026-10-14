@@ -29,11 +29,22 @@ public class BrewingStandMixin implements BrewingStandAccess {
 
     @Shadow private int brewTime;
     @Shadow private int totalBrewTime;
+    @Shadow private int fuel;
     @Shadow private NonNullList<ItemStack> items;
 
     @Override
     public int eternalPotions$getBrewTime() {
         return this.brewTime;
+    }
+
+    @Override
+    public void eternalPotions$setBrewTime(int value) {
+        this.brewTime = value;
+    }
+
+    @Override
+    public void eternalPotions$setFuel(int value) {
+        this.fuel = value;
     }
 
     private boolean eternalPotions$isEternalBrew() {

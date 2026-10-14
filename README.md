@@ -24,6 +24,7 @@ Join our Minecraft SMP's Discord Server that uses this mod:
 - [The Four Effects](#the-four-effects)
 - [Vanilla Effects Are Nerfed](#vanilla-effects-are-nerfed)
 - [The King System](#the-king-system)
+- [Locator Bar & Brew Timer](#locator-bar--brew-timer)
 - [Commands](#commands)
 - [Recipes](#recipes)
 - [Brewing](#brewing)
@@ -43,6 +44,8 @@ Join our Minecraft SMP's Discord Server that uses this mod:
 - **Four custom effects**, each with three levels. Level III is unique — only one player per effect can hold it at a time.
 - **A King system** that tracks who holds each Level III effect. Kings get special particle effects, an announcement when crowned, and lose their throne on death.
 - **A `/kings` menu** that shows the current holders of each throne.
+- **Live waypoints on the locator bar** for every active brew, with a **timer above each icon** showing time remaining.
+- **Version checking** — clients with the wrong mod version are told exactly which version to install.
 
 Both items are **fireproof**, so dying in lava won't destroy them.
 
@@ -53,7 +56,7 @@ Both items are **fireproof**, so dying in lava won't destroy them.
 1. Install **Fabric Loader 0.19.5** for **Minecraft 26.3**.
 2. Download and install **Java 25** if you don't have it.
 3. Drop `fabric-api-0.162.0+26.3.jar` into your `mods/` folder.
-4. Drop `eternal-potions-1.0.0.jar` into your `mods/` folder.
+4. Drop `eternal-potions-1.1.0.jar` into your `mods/` folder.
 5. Launch Minecraft with the Fabric profile.
 
 ---
@@ -135,6 +138,25 @@ Thrones survive **server restarts**. If the server crashes or shuts down, the Ki
 
 ---
 
+## Locator Bar & Brew Timer
+
+Every brewing stand currently brewing an Eternal Potion shows up on the **locator bar** — the strip at the top of the screen, above the XP bar.
+
+### What you see
+
+- A **waypoint icon** appears on the locator bar for each active brew.
+- The waypoint is **visible at any distance**, in any dimension, and **no recovery compass is required**.
+- A **live timer** in `M:SS` format sits above each waypoint, showing time left in the brew.
+- The timer **moves with the icon** as you rotate — the sprite slides left and right along the bar, and the timer follows it.
+- When the icon would fall off the visible bar, both the icon and the timer hide.
+- When the brew ends or the stand is destroyed, the waypoint is removed from the bar entirely.
+
+### Why it matters
+
+The 10-minute brew locks you in place. Anyone tracking the server can see where you are. The locator bar tells you — and everyone else — exactly how long you have until the potion is ready and where to hunt or defend.
+
+---
+
 ## Commands
 
 All `/eternal` commands require **OP** (permission level 2).
@@ -145,16 +167,32 @@ All `/eternal` commands require **OP** (permission level 2).
 |---|---|
 | `/kings` | Opens the Kings leaderboard menu. Client-side only. |
 
-### Admin Commands
+### Stand Commands
 
 | Command | What it does |
 |---|---|
-| `/eternal give <player> <effect>` | Grants one level of an effect. Granting a third time crowns the player. |
-| `/eternal take <player> <effect>` | Removes an effect entirely. Dethrones if the player was King. |
-| `/eternal king crown <player> <effect>` | Force-crowns a player, even offline. |
+| `/eternal stand stop <pos>` | Stops an Eternal brew, drops its contents, and destroys the stand. |
+| `/eternal stand start <pos>` | Spawns a brewing stand at the position with blaze powder, a water bottle, and an Eternal Shard pre-loaded. Auto-starts the brew. If the chunk isn't loaded, the first attempt is refused — a second attempt at the same position force-loads the chunk. |
+
+### Effect Commands
+
+| Command | What it does |
+|---|---|
+| `/eternal effect give <player> <effect>` | Grants one level of an effect. Granting a third time crowns the player. |
+| `/eternal effect take <player> <effect>` | Drops one level at a time: **III → II → I → gone**. Refuses on Kings (use `/eternal king dethrone`). Refuses if the target doesn't have the effect. |
+
+### King Commands
+
+| Command | What it does |
+|---|---|
+| `/eternal king crown <player> <effect>` | Force-crowns a player. Dethrones the current King if any. |
 | `/eternal king dethrone <effect>` | Removes the King of an effect. They drop to Level II. |
-| `/eternal king list` | Lists the current King of each effect. |
-| `/eternal stop <x> <y> <z>` | Stops an Eternal brew in progress and destroys the stand. |
+
+### Item Commands
+
+| Command | What it does |
+|---|---|
+| `/eternal item <player> <shard\|potion> <quantity>` | Grants the target 1 to 64 of either Eternal item. |
 
 **Effect names accepted:** `speed`, `regeneration` (or `regen`), `resistance` (or `resis`), `strength`.
 
@@ -202,11 +240,12 @@ Brewing an Eternal Potion is not like vanilla brewing.
 - The brewing stand is **locked**. Nobody can open it, take items out, insert items, or break the block.
 - All potions in the three slots are **consolidated to the center slot** at the start of the brew. If you put potions in multiple slots, the extras are discarded.
 - A server-wide message announces the brew when it starts.
+- A waypoint appears on the **locator bar** for everyone, with a live timer counting down.
 - You cannot remove the shard mid-brew.
 
 ### Stopping a brew
 
-An OP can run `/eternal stop <x> <y> <z>` to cancel a brew and destroy the stand. This drops the contents, so the shard and potion aren't lost — but the stand is gone.
+An OP can run `/eternal stand stop <x> <y> <z>` to cancel a brew and destroy the stand. This drops the contents, so the shard and potion aren't lost — but the stand is gone. The waypoint clears from every player's locator bar.
 
 ### After the brew
 
@@ -221,7 +260,7 @@ Your Eternal effects are protected against most ways of losing them:
 - **Milk** doesn't remove Eternal effects. You keep them after drinking.
 - **Totems of Undying** don't just save you — they preserve your Eternal effects on pop.
 - **Admin `/effect clear`** on you does remove Eternal effects. That's intentional.
-- **Death** removes your Eternal effects. However, a shard drops where you died — usually. If you die in lava or the void, the shard may be destroyed.
+- **Death** removes your Eternal effects, but a shard is **always** dropped where you died. Both Eternal items are fireproof, so lava and fire don't destroy them. Only the void can lose the drop.
 
 Vanilla Speed, Regeneration, Resistance, and Strength are **blocked** while you have the corresponding Eternal effect. You cannot stack them.
 
@@ -234,6 +273,7 @@ Vanilla Speed, Regeneration, Resistance, and Strength are **blocked** while you 
 - **The strength King is a burst threat.** +9 attack damage is more than a diamond sword's base damage. Do not melee them without a plan.
 - **Losing your throne on death is brutal.** A King who dies in a fight loses the throne and drops a shard — the winner can pick it up and brew more.
 - **Shards are farmable.** Kill a player who has any Eternal effect and they drop a shard 100% of the time. This makes PvP profitable.
+- **Watch the locator bar.** Every active brew shows up there with a live timer. If you see a brew you didn't start, someone is nearby and vulnerable.
 - **Stay near a brewing stand.** The 10-minute brew locks the stand and announces its position. Enemies will find it. Brew in a secure location.
 - **Vanilla potions are half as strong.** If you're relying on vanilla Speed, Strength, Regen, or Resistance, you're at a disadvantage. Get an Eternal Potion.
 
@@ -257,7 +297,7 @@ A: You stay at Level II. You do not become a King.
 A: Yes. A single player can hold multiple thrones simultaneously.
 
 **Q: Is there a way to remove my own Eternal effects?**
-A: Ask an OP to run `/eternal take <you> <effect>`. There's no player-side way to remove them other than dying.
+A: Ask an OP to run `/eternal effect take <you> <effect>`. There's no player-side way to remove them other than dying.
 
 **Q: Does the brew finish if I unload the chunk?**
 A: No. The brew only progresses while the chunk containing the brewing stand is loaded. Keep the area loaded or use a chunk loader.
@@ -267,6 +307,12 @@ A: It should work with most. If another mod adds effects with the same names or 
 
 **Q: Why are vanilla potions weaker now?**
 A: To make Eternal Potions feel rewarding. Vanilla Speed, Strength, Regeneration, and Resistance are each cut to roughly half their normal values while this mod is installed.
+
+**Q: What happens if I join with the wrong mod version?**
+A: You'll be disconnected with a message telling you exactly which version to install. Update the mod and try again.
+
+**Q: Do I need a recovery compass to see the brew waypoints?**
+A: No. The locator bar is forced on for everyone while the mod is loaded. You'll see brew waypoints without any compass.
 
 ---
 
